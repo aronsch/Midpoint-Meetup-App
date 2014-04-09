@@ -21,6 +21,10 @@
 		9C13358718F2135E00243849 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C13356918F2135E00243849 /* UIKit.framework */; };
 		9C13358F18F2135E00243849 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9C13358D18F2135E00243849 /* InfoPlist.strings */; };
 		9C13359118F2135E00243849 /* CenterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C13359018F2135E00243849 /* CenterTests.m */; };
+		9C13359C18F214BC00243849 /* CENSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C13359B18F214BC00243849 /* CENSearchViewController.m */; };
+		9C1335A018F214DD00243849 /* CENContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C13359F18F214DD00243849 /* CENContactViewController.m */; };
+		9C1335A318F2186800243849 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C1335A218F2186800243849 /* MapKit.framework */; };
+		9C1335A518F2186F00243849 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C1335A418F2186F00243849 /* CoreLocation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +57,12 @@
 		9C13358C18F2135E00243849 /* CenterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CenterTests-Info.plist"; sourceTree = "<group>"; };
 		9C13358E18F2135E00243849 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		9C13359018F2135E00243849 /* CenterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CenterTests.m; sourceTree = "<group>"; };
+		9C13359A18F214BC00243849 /* CENSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CENSearchViewController.h; sourceTree = "<group>"; };
+		9C13359B18F214BC00243849 /* CENSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CENSearchViewController.m; sourceTree = "<group>"; };
+		9C13359E18F214DD00243849 /* CENContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CENContactViewController.h; sourceTree = "<group>"; };
+		9C13359F18F214DD00243849 /* CENContactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CENContactViewController.m; sourceTree = "<group>"; };
+		9C1335A218F2186800243849 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		9C1335A418F2186F00243849 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C1335A518F2186F00243849 /* CoreLocation.framework in Frameworks */,
+				9C1335A318F2186800243849 /* MapKit.framework in Frameworks */,
 				9C13356818F2135E00243849 /* CoreGraphics.framework in Frameworks */,
 				9C13356A18F2135E00243849 /* UIKit.framework in Frameworks */,
 				9C13356618F2135E00243849 /* Foundation.framework in Frameworks */,
@@ -101,6 +113,8 @@
 		9C13356418F2135E00243849 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9C1335A418F2186F00243849 /* CoreLocation.framework */,
+				9C1335A218F2186800243849 /* MapKit.framework */,
 				9C13356518F2135E00243849 /* Foundation.framework */,
 				9C13356718F2135E00243849 /* CoreGraphics.framework */,
 				9C13356918F2135E00243849 /* UIKit.framework */,
@@ -117,6 +131,8 @@
 				9C13357718F2135E00243849 /* Main.storyboard */,
 				9C13357A18F2135E00243849 /* CENViewController.h */,
 				9C13357B18F2135E00243849 /* CENViewController.m */,
+				9C13359D18F214C600243849 /* Search View */,
+				9C1335A118F214E100243849 /* Contact View */,
 				9C13357D18F2135E00243849 /* Images.xcassets */,
 				9C13356C18F2135E00243849 /* Supporting Files */,
 			);
@@ -150,6 +166,24 @@
 				9C13358D18F2135E00243849 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9C13359D18F214C600243849 /* Search View */ = {
+			isa = PBXGroup;
+			children = (
+				9C13359A18F214BC00243849 /* CENSearchViewController.h */,
+				9C13359B18F214BC00243849 /* CENSearchViewController.m */,
+			);
+			name = "Search View";
+			sourceTree = "<group>";
+		};
+		9C1335A118F214E100243849 /* Contact View */ = {
+			isa = PBXGroup;
+			children = (
+				9C13359E18F214DD00243849 /* CENContactViewController.h */,
+				9C13359F18F214DD00243849 /* CENContactViewController.m */,
+			);
+			name = "Contact View";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -251,8 +285,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				9C13357218F2135E00243849 /* main.m in Sources */,
+				9C1335A018F214DD00243849 /* CENContactViewController.m in Sources */,
 				9C13357618F2135E00243849 /* CENAppDelegate.m in Sources */,
 				9C13357C18F2135E00243849 /* CENViewController.m in Sources */,
+				9C13359C18F214BC00243849 /* CENSearchViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
