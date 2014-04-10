@@ -64,7 +64,7 @@ typedef enum {
 #pragma mark - UI Setup
 
 - (void)setupSearchPullTab {
-    CGRect pullTabRect = CGRectMake(0, 340, 66, 66);
+    CGRect pullTabRect = CGRectMake(0, 428, 66, 66);
     UIView *pullTabView = [[UIView alloc] initWithFrame:pullTabRect];
     [pullTabView setBackgroundColor:[UIColor whiteColor]];
     [self setSearchPullTab:pullTabView];
@@ -80,7 +80,7 @@ typedef enum {
 }
 
 - (void)setupContactPullTab {
-    CGRect pullTabRect = CGRectMake([self viewMaxX]-66, 300, 66, 66);
+    CGRect pullTabRect = CGRectMake([self viewMaxX]-66, 360, 66, 66);
     UIView *pullTabView = [[UIView alloc] initWithFrame:pullTabRect];
     [pullTabView setBackgroundColor:[UIColor whiteColor]];
     [self setContactPullTab:pullTabView];
@@ -127,6 +127,7 @@ typedef enum {
 - (void)drawerPan:(UIPanGestureRecognizer *)panGR
      withTabViewGroup:(NSMutableDictionary *)tabViewGroup {
     
+    [self closeOppositeForTabViewGroup:tabViewGroup];
     CGFloat xTranslation = [panGR translationInView:self.view].x;
     CGFloat xVelocity = [panGR velocityInView:self.view].x;
     
@@ -136,45 +137,31 @@ typedef enum {
     CGRect tabNewFrame = CGRectOffset(tabView.frame, xTranslation, 0);
     CGRect targetNewFrame = CGRectOffset(targetView.frame, xTranslation, 0);
     
+    BOOL isLeftOriented = [tabViewGroup[@"side"] isEqualToString:@"left"];
+    BOOL isRightOriented = !isLeftOriented;
+    BOOL isInBoundsLeft = [self rectsWithinLeftBoundsForTabRect:tabNewFrame
+                                                  andTargetRect:targetNewFrame];
+    BOOL isInBoundsRight = [self rectsWithinRightBoundsForTabRect:tabNewFrame
+                                                    andTargetRect:targetNewFrame];
+    
     // pan if tab is in view and outer edge of drawer
     // has not reached outer edge of view
-    if ([tabViewGroup[@"side"] isEqualToString:@"left"]
-        && [self rectsWithinLeftBoundsForTabRect:tabNewFrame andTargetRect:targetNewFrame]) {
+    if ((isLeftOriented && isInBoundsLeft) ||
+        (!isLeftOriented && isInBoundsRight)) {
             tabView.frame = tabNewFrame;
             targetView.frame = targetNewFrame;
     }
-    else if ([tabViewGroup[@"side"] isEqualToString:@"right"]
-             && [self rectsWithinRightBoundsForTabRect:tabNewFrame andTargetRect:targetNewFrame]) {
-        
-    }
     
     if ([panGR state] == UIGestureRecognizerStateEnded) {
-        if (xVelocity > 0) { //panning right
-            tabNewFrame.origin.x = targetNewFrame.size.width;
-            targetNewFrame.origin.x = 0;
-            [UIView animateWithDuration:0.15f
-                             animations:^{
-                                 [tabView setFrame:tabNewFrame];
-                                 [targetView setFrame:targetNewFrame];
-                             }
-                             completion:^(BOOL finished){
-                                 tabViewGroup[@"drawer visible"] = @YES;
-                             }];
+        if ((xVelocity > 0 && isLeftOriented) ||
+            (xVelocity < 0 && isRightOriented)) {
+            [self showTabViewGroup:tabViewGroup];
         }
-        else if (xVelocity < 0) { //panning left
-            tabNewFrame.origin.x = 0;
-            targetNewFrame.origin.x = -targetNewFrame.size.width;
-            [UIView animateWithDuration:0.15f
-                             animations:^{
-                                 [tabView setFrame:tabNewFrame];
-                                 [targetView setFrame:targetNewFrame];
-                             }
-                             completion:^(BOOL finished){
-                                 tabViewGroup[@"drawer visible"] = @NO;
-                             }];
+        else if ((xVelocity < 0 && isLeftOriented) ||
+                 (xVelocity > 0 && isRightOriented)) {
+            [self hideTabViewGroup:tabViewGroup];
         }
     }
-    
     
     [panGR setTranslation:CGPointZero inView:self.view];
 }
@@ -190,27 +177,19 @@ typedef enum {
     if ([tabViewGroup[@"side"] isEqualToString:@"left"]) {
         tabNewFrame.origin.x = 0;
         targetNewFrame.origin.x = -targetNewFrame.size.width;
-        [UIView animateWithDuration:0.15f
-                         animations:^{
-                             [tabView setFrame:tabNewFrame];
-                             [targetView setFrame:targetNewFrame];
-                         }
-                         completion:^(BOOL finished){
-                             tabViewGroup[@"drawer visible"] = @NO;
-                         }];
     }
     else if ([tabViewGroup[@"side"] isEqualToString:@"right"]) {
         tabNewFrame.origin.x = [self viewMaxX] - tabNewFrame.size.width;
         targetNewFrame.origin.x = [self viewMaxX];
-        [UIView animateWithDuration:0.15f
-                         animations:^{
-                             [tabView setFrame:tabNewFrame];
-                             [targetView setFrame:targetNewFrame];
-                         }
-                         completion:^(BOOL finished){
-                             tabViewGroup[@"drawer visible"] = @NO;
-                         }];
     }
+    [UIView animateWithDuration:0.15f
+                     animations:^{
+                         [tabView setFrame:tabNewFrame];
+                         [targetView setFrame:targetNewFrame];
+                     }
+                     completion:^(BOOL finished){
+                         tabViewGroup[@"drawer visible"] = @NO;
+                     }];
 }
 
 - (void)showTabViewGroup:(NSMutableDictionary *)tabViewGroup {
@@ -222,27 +201,19 @@ typedef enum {
     if ([tabViewGroup[@"side"] isEqualToString:@"left"]) {
         tabNewFrame.origin.x = targetNewFrame.size.width;
         targetNewFrame.origin.x = 0;
-        [UIView animateWithDuration:0.15f
-                         animations:^{
-                             [tabView setFrame:tabNewFrame];
-                             [targetView setFrame:targetNewFrame];
-                         }
-                         completion:^(BOOL finished){
-                             tabViewGroup[@"drawer visible"] = @NO;
-                         }];
     }
     else if ([tabViewGroup[@"side"] isEqualToString:@"right"]) {
         tabNewFrame.origin.x = [self viewMaxX] - targetNewFrame.size.width - tabNewFrame.size.width;
         targetNewFrame.origin.x = [self viewMaxX] - targetNewFrame.size.width;
-        [UIView animateWithDuration:0.15f
-                         animations:^{
-                             [tabView setFrame:tabNewFrame];
-                             [targetView setFrame:targetNewFrame];
-                         }
-                         completion:^(BOOL finished){
-                             tabViewGroup[@"drawer visible"] = @NO;
-                         }];
     }
+    [UIView animateWithDuration:0.15f
+                     animations:^{
+                         [tabView setFrame:tabNewFrame];
+                         [targetView setFrame:targetNewFrame];
+                     }
+                     completion:^(BOOL finished){
+                         tabViewGroup[@"drawer visible"] = @YES;
+                     }];
 }
 
 #pragma mark Container Segues
@@ -275,6 +246,17 @@ typedef enum {
 
 - (CGFloat)viewMaxX {
     return CGRectGetMaxX(self.view.frame);
+}
+
+- (void)closeOppositeForTabViewGroup:(NSDictionary *)tabViewGroup {
+    if ([tabViewGroup isEqual:self.searchPullTabViews]) {
+        if ([self.contactPullTabViews[@"drawer visible"] isEqualToValue:@YES]) {
+            [self hideTabViewGroup:self.contactPullTabViews];
+        }
+    }
+    else {
+        [self hideTabViewGroup:self.searchPullTabViews];
+    }
 }
 
 @end
