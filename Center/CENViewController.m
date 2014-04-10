@@ -17,7 +17,9 @@
 @property (weak, nonatomic) CENSearchViewController *searchViewController;
 @property (weak, nonatomic) CENContactViewController *contactViewController;
 @property (weak, nonatomic) UIView *searchPullTab;
-@property (strong, nonatomic) NSDictionary *searchPullTabViews;
+@property (weak, nonatomic) UIView *contactPullTab;
+@property (strong, nonatomic) NSMutableDictionary *searchPullTabViews;
+@property (strong, nonatomic) NSMutableDictionary *contactPullTabViews;
 
 typedef enum {
     kPanLeft,
@@ -36,6 +38,7 @@ typedef enum {
 //    [self.contactViewController.view setHidden:YES];
 //    self.searchView.frame = CGRectOffset(self.searchView.frame, -400.0f, 0);
     [self setupSearchPullTab];
+    [self setupContactPullTab];
 }
 
 #define ENDSCALE 0.0001f
@@ -58,104 +61,188 @@ typedef enum {
     [super didReceiveMemoryWarning];
 }
 
+#pragma mark - UI Setup
+
 - (void)setupSearchPullTab {
-    CGRect pullTabRect = CGRectMake(0, 300, 66, 66);
-    UIView *pullTab = [[UIView alloc] initWithFrame:pullTabRect];
-    [pullTab setBackgroundColor:[UIColor whiteColor]];
-    [self setSearchPullTab:pullTab];
-    [self setSearchPullTabViews:@{@"tab": pullTab,
-                                  @"target view": self.searchViewController.view.superview,
-                                  @"side": @"left"}];
-    
-    [self.view addSubview:pullTab];
-    [self.view bringSubviewToFront:pullTab];
+    CGRect pullTabRect = CGRectMake(0, 340, 66, 66);
+    UIView *pullTabView = [[UIView alloc] initWithFrame:pullTabRect];
+    [pullTabView setBackgroundColor:[UIColor whiteColor]];
+    [self setSearchPullTab:pullTabView];
+    NSMutableDictionary *groupDict = [NSMutableDictionary
+                                      dictionaryWithDictionary:@{@"tab": pullTabView,
+                                                                 @"target view": self.searchViewController.view.superview,
+                                                                 @"side": @"left",
+                                                                 @"drawer visible": @NO}];
+    [self setSearchPullTabViews:groupDict];
+    [self.view addSubview:pullTabView];
+    [self.view bringSubviewToFront:pullTabView];
+    [self configurePanGestureRecognizers];
+}
+
+- (void)setupContactPullTab {
+    CGRect pullTabRect = CGRectMake([self viewMaxX]-66, 300, 66, 66);
+    UIView *pullTabView = [[UIView alloc] initWithFrame:pullTabRect];
+    [pullTabView setBackgroundColor:[UIColor whiteColor]];
+    [self setContactPullTab:pullTabView];
+    NSMutableDictionary *groupDict = [NSMutableDictionary
+                                      dictionaryWithDictionary:@{@"tab": pullTabView,
+                                                                 @"target view": self.contactViewController.view.superview,
+                                                                 @"side": @"right",
+                                                                 @"drawer visible": @NO}];
+    [self setContactPullTabViews:groupDict];
+    [self.view addSubview:pullTabView];
+    [self.view bringSubviewToFront:pullTabView];
     [self configurePanGestureRecognizers];
 }
 
 - (void)configurePanGestureRecognizers {
-    UIPanGestureRecognizer *panGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftDrawerPan:)];
+    UIPanGestureRecognizer *searchTabPanGR = [[UIPanGestureRecognizer alloc]
+                                     initWithTarget:self
+                                     action:@selector(handleLeftDrawerPan:)];
     
-    [self.searchViewController.view addGestureRecognizer:panGR];
-    [self.searchPullTab addGestureRecognizer:panGR];
+    UIPanGestureRecognizer *contactTabPanGR = [[UIPanGestureRecognizer alloc]
+                                              initWithTarget:self
+                                              action:@selector(handleRightDrawerPan:)];
+    
+    
+    [self.searchViewController.view.superview addGestureRecognizer:searchTabPanGR];
+    [self.searchPullTab addGestureRecognizer:searchTabPanGR];
+    
+    [self.contactViewController.view.superview addGestureRecognizer:contactTabPanGR];
+    [self.contactPullTab addGestureRecognizer:contactTabPanGR];
     
 }
 
-- (void)offsetTabViewGroup:(NSDictionary *)tabViewGroup
-                                      xOffset:(CGFloat)xOffset
-{
+#pragma mark - Gesture Handling
+
+- (void)handleLeftDrawerPan:(UIPanGestureRecognizer *)panGR {
+    [self drawerPan:panGR withTabViewGroup:self.searchPullTabViews];
+}
+
+- (void)handleRightDrawerPan:(UIPanGestureRecognizer *)panGR {
+    [self drawerPan:panGR withTabViewGroup:self.contactPullTabViews];
+}
+
+
+- (void)drawerPan:(UIPanGestureRecognizer *)panGR
+     withTabViewGroup:(NSMutableDictionary *)tabViewGroup {
+    
+    CGFloat xTranslation = [panGR translationInView:self.view].x;
+    CGFloat xVelocity = [panGR velocityInView:self.view].x;
+    
     UIView* tabView = tabViewGroup[@"tab"];
     UIView* targetView = tabViewGroup[@"target view"];
     
-    CGRect tabNewFrame = CGRectOffset(tabView.frame, xOffset, 0);
-    CGRect targetNewFrame = CGRectOffset(targetView.frame, xOffset, 0);
+    CGRect tabNewFrame = CGRectOffset(tabView.frame, xTranslation, 0);
+    CGRect targetNewFrame = CGRectOffset(targetView.frame, xTranslation, 0);
     
-    if (tabNewFrame.origin.x >= 0 &&
-        targetNewFrame.origin.x <= 0){
-        NSLog(@"target x origin: %f // tab x origin: %f",
-              targetNewFrame.origin.x,
-              tabNewFrame.origin.x);
-        tabView.frame = tabNewFrame;
-        targetView.frame = targetNewFrame;
+    // pan if tab is in view and outer edge of drawer
+    // has not reached outer edge of view
+    if ([tabViewGroup[@"side"] isEqualToString:@"left"]
+        && [self rectsWithinLeftBoundsForTabRect:tabNewFrame andTargetRect:targetNewFrame]) {
+            tabView.frame = tabNewFrame;
+            targetView.frame = targetNewFrame;
+    }
+    else if ([tabViewGroup[@"side"] isEqualToString:@"right"]
+             && [self rectsWithinRightBoundsForTabRect:tabNewFrame andTargetRect:targetNewFrame]) {
+        
     }
     
+    if ([panGR state] == UIGestureRecognizerStateEnded) {
+        if (xVelocity > 0) { //panning right
+            tabNewFrame.origin.x = targetNewFrame.size.width;
+            targetNewFrame.origin.x = 0;
+            [UIView animateWithDuration:0.15f
+                             animations:^{
+                                 [tabView setFrame:tabNewFrame];
+                                 [targetView setFrame:targetNewFrame];
+                             }
+                             completion:^(BOOL finished){
+                                 tabViewGroup[@"drawer visible"] = @YES;
+                             }];
+        }
+        else if (xVelocity < 0) { //panning left
+            tabNewFrame.origin.x = 0;
+            targetNewFrame.origin.x = -targetNewFrame.size.width;
+            [UIView animateWithDuration:0.15f
+                             animations:^{
+                                 [tabView setFrame:tabNewFrame];
+                                 [targetView setFrame:targetNewFrame];
+                             }
+                             completion:^(BOOL finished){
+                                 tabViewGroup[@"drawer visible"] = @NO;
+                             }];
+        }
+    }
+    
+    
+    [panGR setTranslation:CGPointZero inView:self.view];
 }
 
-- (void)handleLeftDrawerPan:(UIPanGestureRecognizer *)panGR {
-    UIView *selfView = self.view;
-//    UIView *tabView = self.searchPullTabViews[@"tab"];
-//    UIView *drawerView = self.searchPullTabViews[@"target view"];
-    CGFloat xTranslation = [panGR translationInView:selfView].x;
-    CGFloat xVelocity = [panGR velocityInView:selfView].x;
-    [self.view bringSubviewToFront:self.searchViewController.view];
-    [self offsetTabViewGroup:self.searchPullTabViews xOffset:xTranslation];
-    [panGR setTranslation:CGPointZero inView:selfView];
+#pragma mark Animation 
+
+- (void)hideTabViewGroup:(NSMutableDictionary *)tabViewGroup {
+    UIView *tabView = tabViewGroup[@"tab"];
+    UIView *targetView = tabViewGroup[@"target view"];
+    CGRect tabNewFrame = tabView.frame;
+    CGRect targetNewFrame = targetView.frame;
     
-//    
-//    CENPanDirection direction = [self panDirectionForTranslation:xVelocity];
-//    
-//    CGFloat drawerWidth = self.searchViewController.view.frame.size.width;
-//    
-//    CGRect newFrame = CGRectOffset(selfView.frame, xTranslation, 0);
-//    
-//    if (newFrame.origin.x > 0) {
-//        newFrame.origin.x = 0;
-//    }
-//    if (newFrame.origin.x < -drawerWidth) {
-//        newFrame.origin.x = -drawerWidth;
-//    }
-//    
-//    if ([panGR state] == UIGestureRecognizerStateEnded) {
-//        switch (direction) {
-//            case kPanRight:
-//                if (xVelocity > 0 || selfView.origin.x > -drawerWidth/2) {
-//                    newFrame.origin.x = 0;
-//                    [UIView animateWithDuration:0.15f
-//                                     animations:^{
-//                                         [drawerView setFrame:newFrame];
-//                                     }
-//                                     completion:^(BOOL finished){
-//                                     }];
-//                }
-//                break;
-//            case kPanLeft:
-//                if (xVelocity < 0 || drawerView.frame.origin.x < -drawerWidth/2) {
-//                    newFrame.origin.x = -drawerWidth;
-//                    [UIView animateWithDuration:0.15f
-//                                     animations:^{
-//                                         [drawerView setFrame:newFrame];
-//                                     }
-//                                     completion:^(BOOL finished){
-//                                     }];
-//                }
-//                break;
-//            case kNoPan:
-//                break;
-//            default:
-//                break;
-//        }
-//    }
-//    
-//    self.frame = newFrame;
+    if ([tabViewGroup[@"side"] isEqualToString:@"left"]) {
+        tabNewFrame.origin.x = 0;
+        targetNewFrame.origin.x = -targetNewFrame.size.width;
+        [UIView animateWithDuration:0.15f
+                         animations:^{
+                             [tabView setFrame:tabNewFrame];
+                             [targetView setFrame:targetNewFrame];
+                         }
+                         completion:^(BOOL finished){
+                             tabViewGroup[@"drawer visible"] = @NO;
+                         }];
+    }
+    else if ([tabViewGroup[@"side"] isEqualToString:@"right"]) {
+        tabNewFrame.origin.x = [self viewMaxX] - tabNewFrame.size.width;
+        targetNewFrame.origin.x = [self viewMaxX];
+        [UIView animateWithDuration:0.15f
+                         animations:^{
+                             [tabView setFrame:tabNewFrame];
+                             [targetView setFrame:targetNewFrame];
+                         }
+                         completion:^(BOOL finished){
+                             tabViewGroup[@"drawer visible"] = @NO;
+                         }];
+    }
+}
+
+- (void)showTabViewGroup:(NSMutableDictionary *)tabViewGroup {
+    UIView *tabView = tabViewGroup[@"tab"];
+    UIView *targetView = tabViewGroup[@"target view"];
+    CGRect tabNewFrame = tabView.frame;
+    CGRect targetNewFrame = targetView.frame;
+    
+    if ([tabViewGroup[@"side"] isEqualToString:@"left"]) {
+        tabNewFrame.origin.x = targetNewFrame.size.width;
+        targetNewFrame.origin.x = 0;
+        [UIView animateWithDuration:0.15f
+                         animations:^{
+                             [tabView setFrame:tabNewFrame];
+                             [targetView setFrame:targetNewFrame];
+                         }
+                         completion:^(BOOL finished){
+                             tabViewGroup[@"drawer visible"] = @NO;
+                         }];
+    }
+    else if ([tabViewGroup[@"side"] isEqualToString:@"right"]) {
+        tabNewFrame.origin.x = [self viewMaxX] - targetNewFrame.size.width - tabNewFrame.size.width;
+        targetNewFrame.origin.x = [self viewMaxX] - targetNewFrame.size.width;
+        [UIView animateWithDuration:0.15f
+                         animations:^{
+                             [tabView setFrame:tabNewFrame];
+                             [targetView setFrame:targetNewFrame];
+                         }
+                         completion:^(BOOL finished){
+                             tabViewGroup[@"drawer visible"] = @NO;
+                         }];
+    }
 }
 
 #pragma mark Container Segues
@@ -169,18 +256,25 @@ typedef enum {
     }
 }
 
-- (CENPanDirection)panDirectionForTranslation:(CGFloat)xTranslation {
-    CENPanDirection direction;
-    if (xTranslation > 0) {
-        direction = kPanRight;
-    }
-    else if (xTranslation < 0) {
-        direction = kPanLeft;
-    }
-    else {
-        direction = kNoPan;
-    }
-    return direction;
+#pragma mark - Utility
+
+- (BOOL)rectsWithinLeftBoundsForTabRect:(CGRect)tabRect
+                          andTargetRect:(CGRect)targetRect {
+    
+    return tabRect.origin.x >= 0 && targetRect.origin.x <= 0;
+}
+
+- (BOOL)rectsWithinRightBoundsForTabRect:(CGRect)tabRect
+                           andTargetRect:(CGRect)targetRect {
+    
+    CGFloat maxX = [self viewMaxX];
+    BOOL isTabInBounds = CGRectGetMaxX(tabRect) <= maxX;
+    BOOL isTargetInBounds = CGRectGetMinX(targetRect) <= maxX;
+    return isTabInBounds && isTargetInBounds;
+}
+
+- (CGFloat)viewMaxX {
+    return CGRectGetMaxX(self.view.frame);
 }
 
 @end
