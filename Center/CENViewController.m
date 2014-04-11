@@ -10,6 +10,7 @@
 #import <MapKit/MapKit.h>
 #import "CENSearchViewController.h"
 #import "CENContactViewController.h"
+#import "CENContactManager.h"
 
 @interface CENViewController () <MKMapViewDelegate>
 
@@ -20,6 +21,9 @@
 @property (weak, nonatomic) UIView *contactPullTab;
 @property (strong, nonatomic) NSMutableDictionary *searchPullTabViews;
 @property (strong, nonatomic) NSMutableDictionary *contactPullTabViews;
+
+@property (strong, nonatomic) CENContactManager *contactManager;
+
 
 typedef enum {
     kPanLeft,
@@ -34,28 +38,13 @@ typedef enum {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-//    [self.contactViewController.view setHidden:YES];
-//    self.searchView.frame = CGRectOffset(self.searchView.frame, -400.0f, 0);
+    [self configure];
+}
+
+- (void)configure {
     [self setupSearchPullTab];
     [self setupContactPullTab];
 }
-
-#define ENDSCALE 0.0001f
-
--(void)viewtoFoldedPositionForView:(UIView *)view withDuration:(NSTimeInterval)duration {
-    view.layer.anchorPoint = CGPointMake(0.0f, 0.5f);
-    view.frame = CGRectOffset(view.frame, -view.frame.size.width/2, 0);
-    [UIView animateWithDuration:duration
-                     animations:^{
-                         view.frame = CGRectOffset(view.frame, -view.frame.size.width, 0);
-//                         view.transform = CGAffineTransformScale(view.transform, ENDSCALE, 1);
-                     }
-                     completion:^(BOOL finished) {
-                         
-                     }];
-}
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -166,7 +155,7 @@ typedef enum {
     [panGR setTranslation:CGPointZero inView:self.view];
 }
 
-#pragma mark Animation 
+#pragma mark UI Animation
 
 - (void)hideTabViewGroup:(NSMutableDictionary *)tabViewGroup {
     UIView *tabView = tabViewGroup[@"tab"];
@@ -221,9 +210,13 @@ typedef enum {
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"Search View Segue"]) {
         [self setSearchViewController:(CENSearchViewController *)segue.destinationViewController];
+        
     }
     else if ([segue.identifier isEqualToString:@"Contact View Segue"]) {
-        [self setContactViewController:(CENContactViewController *)segue.destinationViewController];
+        [self setContactManager:[[CENContactManager alloc] init]];
+        CENContactViewController *cvc = (CENContactViewController *)segue.destinationViewController;
+        [self setContactViewController:cvc];
+        [cvc setContactManager:self.contactManager];
     }
 }
 

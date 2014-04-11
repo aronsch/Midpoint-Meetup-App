@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+@class CENContactManager;
 
 @interface CENContactViewController : UIViewController
+
+- (void)setContactManager:(CENContactManager *)contactManager;
 
 @end

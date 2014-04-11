@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSNumber *cCENDefaultSearchRadius;
+extern NSNumber *cCENDefaultSearchBufferDistance;
+extern NSNumber *cCENRadiusDeltaTriggeringUpdate;
+extern NSNumber *cCENLocationDeltaTriggeringUpdate;
+
 @interface CENAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;

@@ -12,10 +12,21 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    [self configure];
     return YES;
 }
-							
+
+- (void)configure {
+    NSString *defaultsFile = [[NSBundle mainBundle]
+                          pathForResource:@"Global Settings" ofType:@"plist"];
+    NSDictionary *defaults = [NSDictionary dictionaryWithContentsOfFile:defaultsFile];
+
+    cCENDefaultSearchRadius = (NSNumber *)defaults[@"Default Search Radius"];
+    cCENDefaultSearchBufferDistance = (NSNumber *)defaults[@"Search Buffer"];
+    cCENRadiusDeltaTriggeringUpdate = (NSNumber *)defaults[@"Radius Delta Triggering Search Update"];
+    cCENLocationDeltaTriggeringUpdate = (NSNumber *)defaults[@"User Location Delta Triggering Update"];
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

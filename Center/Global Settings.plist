@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Default Search Radius</key>
+	<integer>1500</integer>
+	<key>Search Buffer</key>
+	<integer>1000</integer>
+	<key>Overlap Setting</key>
+	<integer>1</integer>
+	<key>Radius Delta Triggering Search Update</key>
+	<integer>750</integer>
+	<key>User Location Delta Triggering Update</key>
+	<integer>150</integer>
+	<key>Place Types List</key>
+	<array>
+		<string>American (New)</string>
+		<string>American (Traditional)</string>
+		<string>Breakfast &amp; Brunch</string>
+		<string>Burgers</string>
+		<string>Cafes</string>
+		<string>Chinese</string>
+		<string>Delis</string>
+		<string>Fast Food</string>
+		<string>Indian</string>
+		<string>Italian</string>
+		<string>Japanese</string>
+		<string>Latin American</string>
+		<string>Mediterranean</string>
+		<string>Mexican</string>
+		<string>Pizza</string>
+		<string>Sandwiches</string>
+		<string>Tex-Mex</string>
+		<string>Thai</string>
+	</array>
+</dict>
+</plist>
