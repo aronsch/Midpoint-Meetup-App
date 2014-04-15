@@ -7,6 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+@class CLLocation;
+
+@protocol CENGeoInformationProtocol <NSObject>
+// Protocol indicates that an object has geographic information as a string
+// and can have a location property set.
+-(void)setLocation:(CLLocation *)location;
+-(NSString *)addressAsString;
+
+@end
+
 
 @interface CENCommon : NSObject
 
@@ -35,6 +45,9 @@ extern NSString * const nCENSearchRadiusChangedNotification;
 #pragma mark -Travel Info View Notifications
 extern NSString * const nCENETARequestedNotification;
 
+#pragma mark -Contact Object Notification
+extern NSString * const nCENGeocodeRequestedNotification;
+
 @end
 
 #pragma mark - Macros
@@ -52,3 +65,9 @@ extern NSString * const nCENETARequestedNotification;
 
 
 #pragma mark Position Calculation Macros
+
+
+
+
+
+

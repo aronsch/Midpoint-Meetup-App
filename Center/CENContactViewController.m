@@ -94,7 +94,7 @@
 {
     __weak CENContactViewController *weakSelf = self;
     
-    CENContactABInfo abInfo = makeCENContactABInfo(person, property, identifier);
+    CENContactABInfo abInfo = CENContactABInfoMake(person, property, identifier);
     
     [self.contactManager addContactWithCENContactABInfo:abInfo
                                         completionBlock:^(CENContactAddStatus status, CENContact *contact){

@@ -7,6 +7,7 @@
 //
 
 #import "CENCommon.h"
+@class CLLocation;
 
 @implementation CENCommon
 
@@ -34,4 +35,8 @@ NSString * const nCENSearchRadiusChangedNotification = @"CENSearchRadiusChangedN
 
 #pragma mark -Travel Info View Notifications
 NSString * const nCENETARequestedNotification = @"CENETARequestedNotification";
+
+#pragma mark -Contact Object Notification
+NSString * const nCENGeocodeRequestedNotification = @"CENGeocodeRequestedNotification";
+
 @end

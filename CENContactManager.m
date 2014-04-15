@@ -90,12 +90,18 @@ NSString * const nCENContactRemovedNotification = @"CENContactRemoved";
     return addresses;
 }
 
+#pragma mark - Notification Emission
+
 - (void)emitContactAddedNotificationForContact:(CENContact *)contact {
     [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactAddedNotification object:contact];
 }
 
 - (void)emitContactRemovedNotificationForContact:(CENContact *)contact {
     [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactRemovedNotification object:contact];
+}
+
+- (void)emitContactChangedNotificationForContact:(CENContact *)contact {
+    [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactModifiedNotification object:contact];
 }
 
 @end

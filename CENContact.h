@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AddressBook/AddressBook.h>
 #import <CoreLocation/CoreLocation.h>
+#import "CENCommon.h"
 
 typedef struct {
     ABRecordRef ABRecordRef;
@@ -16,16 +17,12 @@ typedef struct {
     int identifier;
 } CENContactABInfo;
 
-#define makeCENContactABInfo(ABRecordRef,property,identifier) {ABRecordRef,property,identifier}
-
-@interface CENContact : NSObject
+@interface CENContact : NSObject <CENGeoInformationProtocol>
 
 @property (strong, nonatomic) NSDictionary *contact;
-@property (strong, nonatomic) CLLocation *location;
 
 #pragma mark - Factory Methods
 + (instancetype)contactWithCENContactABInfo:(CENContactABInfo)abInfo;
-+ (instancetype)contactWithABRecordRef:(ABRecordRef)contact andProperty:(int)property andIdentifier:(int)identifier;
 
 #pragma Mark - Init Methods
 - (id)initWithABRecordRef:(ABRecordRef)contact andProperty:(int)property andIdentifier:(int)identifier;
@@ -43,5 +40,13 @@ typedef struct {
 #pragma Mark - Contact Comparison
 - (Boolean)isEqualToABContact:(ABRecordRef)contact;
 
+#pragma mark - CENGeoInformationProtocol
+@property (readonly, strong, nonatomic) CLLocation *location;
+- (void)setLocation:(CLLocation *)location;
+
+
+#pragma mark - CENContactABInfo Struct Macro
+
+#define CENContactABInfoMake(ABRecordRef,property,identifier) {ABRecordRef,property,identifier}
 
 @end

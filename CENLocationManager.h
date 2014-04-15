@@ -11,10 +11,7 @@
 @class CLLocation;
 @class CLPlacemark;
 
-
 @interface CENLocationManager : NSObject
-
-
 
 @property (readonly, strong, nonatomic) CLLocation *userLocation;
 

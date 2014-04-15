@@ -11,12 +11,12 @@
 @interface CENContact ()
 
 @property (nonatomic, copy) NSNumber *contactID;
+@property (readwrite, strong, nonatomic) CLLocation *location;
 
 @end
 
 
 @implementation CENContact
-
 
 #pragma mark - Init
 
@@ -24,12 +24,6 @@
     return [[CENContact alloc] initWithABRecordRef:abInfo.ABRecordRef
                                 andProperty:abInfo.property
                                      andIdentifier:abInfo.identifier];
-}
-
-+ (instancetype)contactWithABRecordRef:(ABRecordRef)contact andProperty:(int)property andIdentifier:(int)identifier {
-    return [[CENContact alloc] initWithABRecordRef:contact
-                                       andProperty:property
-                                     andIdentifier:identifier];
 }
 
 - (id)initWithABRecordRef:(ABRecordRef)contact andProperty:(int)property andIdentifier:(int)identifier
@@ -66,7 +60,7 @@
     return data;
 }
 
-#pragma mark Get
+#pragma mark Contact Information
 
 - (NSString *)firstName {
     return self.contact[@"firstName"];
@@ -106,10 +100,18 @@
     return [self imageUIImageWithData:self.contact[@"imageData"]];
 }
 
-#pragma mark Utility
+#pragma mark - CENGeoInformationProtocol
 
-// When working with ABPerson dicts, StringWithFormat protects against returning Null string objects.
+// Custom Location setter dispatches notification
+-(void)setLocation:(CLLocation *)location {
+    _location = location;
+    [self emitLocationAvailable];
+}
 
+#pragma mark - Utility
+
+#pragma mark Address Book Information Bridging
+// When working with c dicts, StringWithFormat protects against returning nil objects.
 - (NSDictionary *)addressDictWithAddressRef:(ABMultiValueRef)addressRef andIdentifier:(int)identifier {
     NSUInteger index = ABMultiValueGetIndexForIdentifier(addressRef, identifier);
     NSArray *addressMulti = (__bridge_transfer NSArray *)ABMultiValueCopyArrayOfAllValues(addressRef);
@@ -127,7 +129,6 @@
     return rDict;
 }
 
-
 - (NSString *)stringWithABRecord:(ABRecordRef)contact forProperty:(ABPropertyID)property {
     NSString *string = @"";
     if ((__bridge_transfer NSString *)ABRecordCopyValue(contact, property)) {
@@ -141,11 +142,21 @@
     return [UIImage imageWithData:data];
 }
 
+# pragma mark Contact Comparison
 
 - (Boolean)isEqualToABContact:(ABRecordRef)contact {
     ABRecordID contactID = ABRecordGetRecordID(contact);
     return [self.contactID intValue] == contactID;
 }
 
+#pragma mark - Notification Emission
+
+- (void)emitGeocodingRequest {
+    [[NSNotificationCenter defaultCenter] postNotificationName:nCENGeocodeRequestedNotification object:self];
+}
+
+- (void)emitLocationAvailable {
+    [[NSNotificationCenter defaultCenter] postNotificationName:nCENGeocodeCompleted object:self];
+}
 
 @end

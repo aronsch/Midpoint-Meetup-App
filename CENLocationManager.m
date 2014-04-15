@@ -82,10 +82,38 @@
     [geoQueue addOperation:geocodeOperation];
 }
 
-#pragma mark - Notifications
+#pragma mark - Notification Emission
 
 - (void)emitUserLocationUpdatedNotification {
     [[NSNotificationCenter defaultCenter] postNotificationName:nCENUserLocationUpdatedNotification object:nil];
+}
+
+#pragma mark - Notification Handling
+
+
+- (void)subscribeToGeocodingRequestNotification {
+    __weak CENLocationManager *weakSelf = self;
+    
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:nCENGeocodeRequestedNotification
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification)
+     {
+         // Check if the object provided by notification conforms to the geographic information protocol.
+         // It should be able to provide geographic search information and have its location property set.
+         if ([notification.object conformsToProtocol:@protocol(CENGeoInformationProtocol)]) {
+             
+             // Set block safe variable for object and assert that it conforms to Geo Info protocol.
+             __block NSObject<CENGeoInformationProtocol> *object = notification.object;
+             
+             [self geocodeAddress:[object addressAsString] completionBlock:^(BOOL succeeded, CLPlacemark *placemark) {
+                 if (succeeded) {
+                     [object setLocation:placemark.location];
+                 }
+             }];
+         }
+     }];
 }
 
 @end
