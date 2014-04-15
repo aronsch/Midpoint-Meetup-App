@@ -10,7 +10,9 @@
 #import <MapKit/MapKit.h>
 #import "CENSearchViewController.h"
 #import "CENContactViewController.h"
+#import "CENLocationManager.h"
 #import "CENContactManager.h"
+#import "CENCommon.h"
 
 @interface CENViewController () <MKMapViewDelegate>
 
@@ -22,8 +24,11 @@
 @property (strong, nonatomic) NSMutableDictionary *searchPullTabViews;
 @property (strong, nonatomic) NSMutableDictionary *contactPullTabViews;
 
+
+@property (strong, nonatomic) CENLocationManager *locationManager;
 @property (strong, nonatomic) CENContactManager *contactManager;
 
+@property (strong, nonatomic) NSMutableArray *contactLocationDicts;
 
 typedef enum {
     kPanLeft,
@@ -44,6 +49,8 @@ typedef enum {
 - (void)configure {
     [self setupSearchPullTab];
     [self setupContactPullTab];
+    [self setLocationManager:[[CENLocationManager alloc] init]];
+    [self.locationManager beginUpdatingLocation];
 }
 - (void)didReceiveMemoryWarning
 {
@@ -205,7 +212,44 @@ typedef enum {
                      }];
 }
 
-#pragma mark Container Segues
+#pragma mark - Notification Subscription
+
+#pragma mark Notifications
+
+- (void)subscribeToLocationUpdatedNotification {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:nCENUserLocationUpdatedNotification
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification)
+     {
+         //
+     }];
+}
+
+- (void)subscribeToContactAddedNotification {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:nCENContactAddedNotification
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification)
+     {
+         // TODO: Location and Contact Dict
+     }];
+}
+
+#pragma mark - Contact Handling
+
+-(NSMutableDictionary *)contactLocationDictionaryForContact:(CENContact *)contact {
+    return [NSMutableDictionary dictionaryWithDictionary:@{@"contact": contact,
+                                                           @"location": [[CLLocation alloc] init]}];
+}
+
+- (void)addContactLocationForContact:(CENContact *)contact {
+    [self.contactLocationDicts addObject:[self contactLocationDictionaryForContact:contact]];
+}
+
+#pragma mark - Container Segues
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"Search View Segue"]) {

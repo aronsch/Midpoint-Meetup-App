@@ -40,6 +40,10 @@
 		9CD51C8818F8A095006CCDB1 /* CENLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD51C8618F8A095006CCDB1 /* CENLocationManager.m */; };
 		9CD51C8B18F8A566006CCDB1 /* Global Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CD51C8A18F8A566006CCDB1 /* Global Settings.plist */; };
 		9CD51C8C18F8A566006CCDB1 /* Global Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CD51C8A18F8A566006CCDB1 /* Global Settings.plist */; };
+		9CD51C8F18FADE72006CCDB1 /* CENCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD51C8E18FADE72006CCDB1 /* CENCommon.m */; };
+		9CD51C9018FADE72006CCDB1 /* CENCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD51C8E18FADE72006CCDB1 /* CENCommon.m */; };
+		9CD51C9318FCA4CA006CCDB1 /* CENMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD51C9218FCA4CA006CCDB1 /* CENMapController.m */; };
+		9CD51C9418FCA4CA006CCDB1 /* CENMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD51C9218FCA4CA006CCDB1 /* CENMapController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +98,10 @@
 		9CD51C8518F8A095006CCDB1 /* CENLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CENLocationManager.h; sourceTree = "<group>"; };
 		9CD51C8618F8A095006CCDB1 /* CENLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CENLocationManager.m; sourceTree = "<group>"; };
 		9CD51C8A18F8A566006CCDB1 /* Global Settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Global Settings.plist"; sourceTree = "<group>"; };
+		9CD51C8D18FADE72006CCDB1 /* CENCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CENCommon.h; path = ../CENCommon.h; sourceTree = "<group>"; };
+		9CD51C8E18FADE72006CCDB1 /* CENCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CENCommon.m; path = ../CENCommon.m; sourceTree = "<group>"; };
+		9CD51C9118FCA4CA006CCDB1 /* CENMapController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CENMapController.h; path = Center/CENMapController.h; sourceTree = "<group>"; };
+		9CD51C9218FCA4CA006CCDB1 /* CENMapController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CENMapController.m; path = Center/CENMapController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +171,8 @@
 			children = (
 				9C13357418F2135E00243849 /* CENAppDelegate.h */,
 				9C13357518F2135E00243849 /* CENAppDelegate.m */,
+				9CD51C8D18FADE72006CCDB1 /* CENCommon.h */,
+				9CD51C8E18FADE72006CCDB1 /* CENCommon.m */,
 				9C1335AA18F636D300243849 /* Views */,
 				9C1335AB18F636F700243849 /* Controllers */,
 				9C1335BE18F63A8200243849 /* Model */,
@@ -239,6 +249,8 @@
 		9C1335AB18F636F700243849 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				9CD51C9118FCA4CA006CCDB1 /* CENMapController.h */,
+				9CD51C9218FCA4CA006CCDB1 /* CENMapController.m */,
 				9CD51C8918F8A0B3006CCDB1 /* Location */,
 				9C1335B018F6372B00243849 /* Contacts */,
 				9C1335B518F6374900243849 /* Search */,
@@ -397,8 +409,10 @@
 				9C13357218F2135E00243849 /* main.m in Sources */,
 				9C1335BC18F63A7B00243849 /* CENContact.m in Sources */,
 				9C1335C118F7504900243849 /* CENTravelInfoViewController.m in Sources */,
+				9CD51C9318FCA4CA006CCDB1 /* CENMapController.m in Sources */,
 				9C1335A018F214DD00243849 /* CENContactViewController.m in Sources */,
 				9CD51C8718F8A095006CCDB1 /* CENLocationManager.m in Sources */,
+				9CD51C8F18FADE72006CCDB1 /* CENCommon.m in Sources */,
 				9C13357618F2135E00243849 /* CENAppDelegate.m in Sources */,
 				9C1335B818F6376900243849 /* CENSearchManager.m in Sources */,
 				9C1335CB18F78EA400243849 /* CENContactViewTableViewCell.m in Sources */,
@@ -415,8 +429,10 @@
 				9C13359118F2135E00243849 /* CenterTests.m in Sources */,
 				9C1335BD18F63A7B00243849 /* CENContact.m in Sources */,
 				9CD51C8818F8A095006CCDB1 /* CENLocationManager.m in Sources */,
+				9CD51C9418FCA4CA006CCDB1 /* CENMapController.m in Sources */,
 				9C1335AF18F6372600243849 /* CENContactManager.m in Sources */,
 				9C1335B918F6376900243849 /* CENSearchManager.m in Sources */,
+				9CD51C9018FADE72006CCDB1 /* CENCommon.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

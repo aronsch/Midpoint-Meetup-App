@@ -17,14 +17,15 @@
 }
 
 - (void)configure {
+    // set global defaults
     NSString *defaultsFile = [[NSBundle mainBundle]
                           pathForResource:@"Global Settings" ofType:@"plist"];
+    
     NSDictionary *defaults = [NSDictionary dictionaryWithContentsOfFile:defaultsFile];
+    
+    [[NSUserDefaults standardUserDefaults] setPersistentDomain:defaults
+                                                       forName:@"AJS.Center"];
 
-    cCENDefaultSearchRadius = (NSNumber *)defaults[@"Default Search Radius"];
-    cCENDefaultSearchBufferDistance = (NSNumber *)defaults[@"Search Buffer"];
-    cCENRadiusDeltaTriggeringUpdate = (NSNumber *)defaults[@"Radius Delta Triggering Search Update"];
-    cCENLocationDeltaTriggeringUpdate = (NSNumber *)defaults[@"User Location Delta Triggering Update"];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

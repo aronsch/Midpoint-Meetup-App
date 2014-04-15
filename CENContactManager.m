@@ -16,6 +16,8 @@
 
 @implementation CENContactManager
 
+NSString * const nCENContactAddedNotification = @"CENContactAdded";
+NSString * const nCENContactRemovedNotification = @"CENContactRemoved";
 
 -(instancetype)init {
     self = [super init];
@@ -27,11 +29,10 @@
 
 
 - (void)addContactWithCENContactABInfo:(CENContactABInfo)abInfo
-                       completionBlock:(void (^)(CENContactAddStatus,
-                                                 CENContact*))completionBlock {
+                       completionBlock:(void (^)(CENContactAddStatus, CENContact*))completionBlock {
     if (![self contactRecordExists:abInfo.ABRecordRef]) {
         __block CENContact *contact = [CENContact contactWithCENContactABInfo:abInfo];
-        [self.contacts addObject:contact];
+        [self addContact:contact];
         completionBlock(kContactAddSuccess,contact);
     }
     else {
@@ -44,14 +45,12 @@
     if (self.contacts.count == 0) {
     }
     [self.contacts addObject:contact];
-    
+    [self emitContactAddedNotificationForContact:contact];
 }
 
 - (void)removeContact:(CENContact *)contact {
     [self.contacts removeObject:contact];
-    if (self.contacts.count == 0) {
-
-    }
+    [self emitContactRemovedNotificationForContact:contact];
 }
 
 - (CENContact *)contactAtIndex:(NSUInteger)index {
@@ -91,6 +90,12 @@
     return addresses;
 }
 
+- (void)emitContactAddedNotificationForContact:(CENContact *)contact {
+    [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactAddedNotification object:contact];
+}
 
+- (void)emitContactRemovedNotificationForContact:(CENContact *)contact {
+    [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactRemovedNotification object:contact];
+}
 
 @end

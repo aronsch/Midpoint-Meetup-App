@@ -9,11 +9,15 @@
 #import <Foundation/Foundation.h>
 #import <AddressBook/AddressBook.h>
 #import "CENContact.h"
+#import "CENCommon.h"
 
 typedef enum {
     kFailedContactExists,
     kContactAddSuccess
 } CENContactAddStatus;
+
+extern NSString * const nCENContactAddedNotification;
+extern NSString * const nCENContactRemovedNotification;
 
 @interface CENContactManager : NSObject
 
