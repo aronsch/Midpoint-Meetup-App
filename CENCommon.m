@@ -7,7 +7,6 @@
 //
 
 #import "CENCommon.h"
-@class CLLocation;
 
 @implementation CENCommon
 
@@ -27,6 +26,7 @@ NSString * const nCENETAReturnedNotification = @"CENETAReturnedNotification";
 NSString * const nCENContactAddedNotification = @"CENContactAdded";
 NSString * const nCENContactRemovedNotification = @"CENContactRemoved";
 NSString * const nCENContactModifiedNotification = @"CENContactModified";
+NSString * const nCENContactsHaveChangedNotification = @"CENContactsHaveChanged";
 
 #pragma mark -Map Interaction Notifications
 NSString * const nCENSearchResultSelectedNotification = @"CENSearchResultSelected";

@@ -12,9 +12,13 @@
 #import "CENContactViewController.h"
 #import "CENLocationManager.h"
 #import "CENContactManager.h"
+#import "CENContactAnnotation.h"
+#import "CENSearchResultAnnotation.h"
+#import "CENMapController.h"
+
 #import "CENCommon.h"
 
-@interface CENViewController () <MKMapViewDelegate>
+@interface CENViewController () <MKMapViewDelegate,CENMapControllerProtocol>
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) CENSearchViewController *searchViewController;
@@ -24,11 +28,12 @@
 @property (strong, nonatomic) NSMutableDictionary *searchPullTabViews;
 @property (strong, nonatomic) NSMutableDictionary *contactPullTabViews;
 
-
 @property (strong, nonatomic) CENLocationManager *locationManager;
 @property (strong, nonatomic) CENContactManager *contactManager;
+@property (strong, nonatomic) CENMapController *mapController;
 
-@property (strong, nonatomic) NSMutableArray *contactLocationDicts;
+@property (strong, nonatomic) NSMutableArray *contactAnnotations;
+@property (strong, nonatomic) NSMutableArray *searchResultAnnotations;
 
 typedef enum {
     kPanLeft,
@@ -50,6 +55,7 @@ typedef enum {
     [self setupSearchPullTab];
     [self setupContactPullTab];
     [self setLocationManager:[[CENLocationManager alloc] init]];
+    [self setMapController:[[CENMapController alloc] initWithDelegate:self]];
     [self.locationManager beginUpdatingLocation];
 }
 - (void)didReceiveMemoryWarning
@@ -162,7 +168,7 @@ typedef enum {
     [panGR setTranslation:CGPointZero inView:self.view];
 }
 
-#pragma mark UI Animation
+#pragma mark - UI Animation
 
 - (void)hideTabViewGroup:(NSMutableDictionary *)tabViewGroup {
     UIView *tabView = tabViewGroup[@"tab"];
@@ -212,9 +218,29 @@ typedef enum {
                      }];
 }
 
-#pragma mark - Notification Subscription
+#pragma mark - CENMapController Protocol Methods
 
-#pragma mark Notifications
+-(void)addContactAnnotationForContact:(CENContact *)contact {
+    CENContactAnnotation *contactAnnotation = [CENContactAnnotation annotationForContact:contact];
+    [self.mapView addAnnotation:contactAnnotation];
+    [self.contactAnnotations addObject:contactAnnotation];
+}
+
+-(void)removeContactAnnotationForContact:(CENContact *)contact {
+    for (CENContactAnnotation *contactAnnotation in self.contactAnnotations) {
+        if ([contactAnnotation.contact isEqual:contact]) {
+            [self.mapView removeAnnotation:contactAnnotation];
+            [self.contactAnnotations removeObject:contactAnnotation];
+        }
+    }
+}
+
+-(void)addSearchResult:(MKPlacemark *)searchResult {
+    
+}
+
+
+#pragma mark - Notification Subscription
 
 - (void)subscribeToLocationUpdatedNotification {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -225,28 +251,6 @@ typedef enum {
      {
          //
      }];
-}
-
-- (void)subscribeToContactAddedNotification {
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:nCENContactAddedNotification
-                        object:nil
-                         queue:[NSOperationQueue mainQueue]
-                    usingBlock:^(NSNotification *notification)
-     {
-         // TODO: Location and Contact Dict
-     }];
-}
-
-#pragma mark - Contact Handling
-
--(NSMutableDictionary *)contactLocationDictionaryForContact:(CENContact *)contact {
-    return [NSMutableDictionary dictionaryWithDictionary:@{@"contact": contact,
-                                                           @"location": [[CLLocation alloc] init]}];
-}
-
-- (void)addContactLocationForContact:(CENContact *)contact {
-    [self.contactLocationDicts addObject:[self contactLocationDictionaryForContact:contact]];
 }
 
 #pragma mark - Container Segues

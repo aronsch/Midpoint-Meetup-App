@@ -35,6 +35,12 @@
 		9C1335CB18F78EA400243849 /* CENContactViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C1335CA18F78EA400243849 /* CENContactViewTableViewCell.m */; };
 		9C1335CE18F8884E00243849 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C1335CC18F8884E00243849 /* AddressBook.framework */; };
 		9C1335CF18F8884E00243849 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C1335CD18F8884E00243849 /* AddressBookUI.framework */; };
+		9C6FF4BE18FE20BC0000393D /* CENContactAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C6FF4BD18FE20BC0000393D /* CENContactAnnotation.m */; };
+		9C6FF4BF18FE20BC0000393D /* CENContactAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C6FF4BD18FE20BC0000393D /* CENContactAnnotation.m */; };
+		9C6FF4C418FE2BC50000393D /* CENSearchResultAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C6FF4C318FE2BC50000393D /* CENSearchResultAnnotation.m */; };
+		9C6FF4C518FE2BC50000393D /* CENSearchResultAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C6FF4C318FE2BC50000393D /* CENSearchResultAnnotation.m */; };
+		9C6FF4C918FE2D4F0000393D /* CENSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C6FF4C818FE2D4F0000393D /* CENSearchResult.m */; };
+		9C6FF4CA18FE2D4F0000393D /* CENSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C6FF4C818FE2D4F0000393D /* CENSearchResult.m */; };
 		9CD51C8418F89690006CCDB1 /* defaultContactThumbnail.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CD51C8318F89690006CCDB1 /* defaultContactThumbnail.png */; };
 		9CD51C8718F8A095006CCDB1 /* CENLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD51C8618F8A095006CCDB1 /* CENLocationManager.m */; };
 		9CD51C8818F8A095006CCDB1 /* CENLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD51C8618F8A095006CCDB1 /* CENLocationManager.m */; };
@@ -94,6 +100,12 @@
 		9C1335CA18F78EA400243849 /* CENContactViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CENContactViewTableViewCell.m; sourceTree = "<group>"; };
 		9C1335CC18F8884E00243849 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		9C1335CD18F8884E00243849 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		9C6FF4BC18FE20BC0000393D /* CENContactAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CENContactAnnotation.h; path = ../CENContactAnnotation.h; sourceTree = "<group>"; };
+		9C6FF4BD18FE20BC0000393D /* CENContactAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CENContactAnnotation.m; path = ../CENContactAnnotation.m; sourceTree = "<group>"; };
+		9C6FF4C218FE2BC50000393D /* CENSearchResultAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CENSearchResultAnnotation.h; sourceTree = "<group>"; };
+		9C6FF4C318FE2BC50000393D /* CENSearchResultAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CENSearchResultAnnotation.m; sourceTree = "<group>"; };
+		9C6FF4C718FE2D4F0000393D /* CENSearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CENSearchResult.h; sourceTree = "<group>"; };
+		9C6FF4C818FE2D4F0000393D /* CENSearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CENSearchResult.m; sourceTree = "<group>"; };
 		9CD51C8318F89690006CCDB1 /* defaultContactThumbnail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = defaultContactThumbnail.png; path = ../../../Dropbox/Development/Coa/Assets/defaultContactThumbnail.png; sourceTree = "<group>"; };
 		9CD51C8518F8A095006CCDB1 /* CENLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CENLocationManager.h; sourceTree = "<group>"; };
 		9CD51C8618F8A095006CCDB1 /* CENLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CENLocationManager.m; sourceTree = "<group>"; };
@@ -236,6 +248,7 @@
 				9C13357718F2135E00243849 /* Main.storyboard */,
 				9C13357A18F2135E00243849 /* CENViewController.h */,
 				9C13357B18F2135E00243849 /* CENViewController.m */,
+				9C6FF4C118FE2B770000393D /* Map Annotations */,
 				9C13359D18F214C600243849 /* Search View */,
 				9C13359A18F214BC00243849 /* CENSearchViewController.h */,
 				9C13359B18F214BC00243849 /* CENSearchViewController.m */,
@@ -296,11 +309,40 @@
 			name = "Contact Cell";
 			sourceTree = "<group>";
 		};
+		9C6FF4C018FE2B450000393D /* Contact Annotation */ = {
+			isa = PBXGroup;
+			children = (
+				9C6FF4BC18FE20BC0000393D /* CENContactAnnotation.h */,
+				9C6FF4BD18FE20BC0000393D /* CENContactAnnotation.m */,
+			);
+			name = "Contact Annotation";
+			sourceTree = "<group>";
+		};
+		9C6FF4C118FE2B770000393D /* Map Annotations */ = {
+			isa = PBXGroup;
+			children = (
+				9C6FF4C018FE2B450000393D /* Contact Annotation */,
+				9C6FF4C618FE2BCD0000393D /* Search Result Annotation */,
+			);
+			name = "Map Annotations";
+			sourceTree = "<group>";
+		};
+		9C6FF4C618FE2BCD0000393D /* Search Result Annotation */ = {
+			isa = PBXGroup;
+			children = (
+				9C6FF4C218FE2BC50000393D /* CENSearchResultAnnotation.h */,
+				9C6FF4C318FE2BC50000393D /* CENSearchResultAnnotation.m */,
+			);
+			name = "Search Result Annotation";
+			sourceTree = "<group>";
+		};
 		9CD51C8918F8A0B3006CCDB1 /* Location */ = {
 			isa = PBXGroup;
 			children = (
 				9CD51C8518F8A095006CCDB1 /* CENLocationManager.h */,
 				9CD51C8618F8A095006CCDB1 /* CENLocationManager.m */,
+				9C6FF4C718FE2D4F0000393D /* CENSearchResult.h */,
+				9C6FF4C818FE2D4F0000393D /* CENSearchResult.m */,
 			);
 			name = Location;
 			sourceTree = "<group>";
@@ -412,6 +454,8 @@
 				9CD51C9318FCA4CA006CCDB1 /* CENMapController.m in Sources */,
 				9C1335A018F214DD00243849 /* CENContactViewController.m in Sources */,
 				9CD51C8718F8A095006CCDB1 /* CENLocationManager.m in Sources */,
+				9C6FF4C418FE2BC50000393D /* CENSearchResultAnnotation.m in Sources */,
+				9C6FF4C918FE2D4F0000393D /* CENSearchResult.m in Sources */,
 				9CD51C8F18FADE72006CCDB1 /* CENCommon.m in Sources */,
 				9C13357618F2135E00243849 /* CENAppDelegate.m in Sources */,
 				9C1335B818F6376900243849 /* CENSearchManager.m in Sources */,
@@ -419,6 +463,7 @@
 				9C1335AE18F6372600243849 /* CENContactManager.m in Sources */,
 				9C13357C18F2135E00243849 /* CENViewController.m in Sources */,
 				9C13359C18F214BC00243849 /* CENSearchViewController.m in Sources */,
+				9C6FF4BE18FE20BC0000393D /* CENContactAnnotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,12 +472,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				9C13359118F2135E00243849 /* CenterTests.m in Sources */,
+				9C6FF4BF18FE20BC0000393D /* CENContactAnnotation.m in Sources */,
 				9C1335BD18F63A7B00243849 /* CENContact.m in Sources */,
 				9CD51C8818F8A095006CCDB1 /* CENLocationManager.m in Sources */,
 				9CD51C9418FCA4CA006CCDB1 /* CENMapController.m in Sources */,
 				9C1335AF18F6372600243849 /* CENContactManager.m in Sources */,
+				9C6FF4C518FE2BC50000393D /* CENSearchResultAnnotation.m in Sources */,
 				9C1335B918F6376900243849 /* CENSearchManager.m in Sources */,
 				9CD51C9018FADE72006CCDB1 /* CENCommon.m in Sources */,
+				9C6FF4CA18FE2D4F0000393D /* CENSearchResult.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

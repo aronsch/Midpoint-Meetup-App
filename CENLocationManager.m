@@ -90,7 +90,6 @@
 
 #pragma mark - Notification Handling
 
-
 - (void)subscribeToGeocodingRequestNotification {
     __weak CENLocationManager *weakSelf = self;
     

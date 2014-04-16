@@ -27,7 +27,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        [self subscribeToNofications];
     }
     return self;
 }
@@ -205,5 +205,50 @@
     return cell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the specified item to be editable.
+    return YES;
+}
 
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        CENContact *contact = [self.contactManager contactAtIndex:indexPath.item];
+        [self.contactManager removeContact:contact];
+        
+        [self.contactTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+    }
+}
+
+
+#pragma mark - Notification Handling
+
+- (void)subscribeToNofications {
+    [self subscribeToContactAddedNotification];
+}
+
+- (void)subscribeToContactAddedNotification {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:nCENContactAddedNotification
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification)
+     {
+         [self.contactTableView reloadData];
+     }];
+}
+
+- (void)subscribeToContactRemovedNotification {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:nCENContactRemovedNotification
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification)
+     {
+         [self.contactTableView reloadData];
+     }];
+}
 @end

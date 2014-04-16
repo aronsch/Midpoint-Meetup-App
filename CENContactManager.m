@@ -10,14 +10,11 @@
 
 @interface CENContactManager ()
 
-@property (nonatomic, copy) NSNumber *contactID;
+@property (readwrite,strong, nonatomic) NSMutableArray *contacts;
 
 @end
 
 @implementation CENContactManager
-
-NSString * const nCENContactAddedNotification = @"CENContactAdded";
-NSString * const nCENContactRemovedNotification = @"CENContactRemoved";
 
 -(instancetype)init {
     self = [super init];
@@ -100,8 +97,19 @@ NSString * const nCENContactRemovedNotification = @"CENContactRemoved";
     [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactRemovedNotification object:contact];
 }
 
+- (void)emitContactRemovalCompletedNotificationForContact:(CENContact *)contact {
+    [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactRemovedNotification object:contact];
+}
+
 - (void)emitContactChangedNotificationForContact:(CENContact *)contact {
-    [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactModifiedNotification object:contact];
+    [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactModifiedNotification
+                                                        object:contact];
+}
+
+- (void)emitContactsHaveChangedNotification {
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:nCENContactsHaveChangedNotification
+     object:[NSArray arrayWithArray:self.contacts]];
 }
 
 @end

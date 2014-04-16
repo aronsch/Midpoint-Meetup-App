@@ -8,12 +8,18 @@
 
 #import <Foundation/Foundation.h>
 @class CLLocation;
+@class CLPlacemark;
 
 @protocol CENGeoInformationProtocol <NSObject>
-// Protocol indicates that an object has geographic information as a string
-// and can have a location property set.
--(void)setLocation:(CLLocation *)location;
+// Protocol indicating that an object can produce a string describing
+// its location and can have a location property set.
 -(NSString *)addressAsString;
+-(void)setLocation:(CLLocation *)location;
+-(CLLocation *)location;
+
+@optional
+// Optionally support more complete placemark object
+-(void)setPlacemark:(CLPlacemark *)placemark;
 
 @end
 
@@ -36,6 +42,7 @@ extern NSString * const nCENETAReturnedNotification;
 extern NSString * const nCENContactAddedNotification;
 extern NSString * const nCENContactRemovedNotification;
 extern NSString * const nCENContactModifiedNotification;
+extern NSString * const nCENContactsHaveChangedNotification;
 
 #pragma mark -Map Interaction Notifications
 extern NSString * const nCENSearchResultSelectedNotification;
@@ -56,17 +63,24 @@ extern NSString * const nCENGeocodeRequestedNotification;
 
 #define CENDefaultsFloatForKey(key) [[[[NSUserDefaults standardUserDefaults] persistentDomainForName:@"AJS.Center"] objectForKey:(key)] floatValue]
 
-#define CENDefaultSearchRadius CENDefaultsFloatForKey(@"Default Search Radius")
-#define CENDefaultSearchBuffer CENDefaultsFloatForKey(@"Search Buffer")
-#define CENDefaultRadiusDelta CENDefaultsFloatForKey(@"Radius Delta Triggering Search Update")
+#define CENDefaultSearchRadius  CENDefaultsFloatForKey(@"Default Search Radius")
+#define CENDefaultSearchBuffer  CENDefaultsFloatForKey(@"Search Buffer")
+#define CENDefaultRadiusDelta   CENDefaultsFloatForKey(@"Radius Delta Triggering Search Update")
 #define CENDefaultLocationDelta CENDefaultsFloatForKey(@"User Location Delta Triggering Update")
 
 #define CENDefaultsArrayForKey(key) (NSArray *)[[[NSUserDefaults standardUserDefaults] persistentDomainForName:@"AJS.Center"] objectForKey:(key)]
 
+#define CENPlaceTypesArray      CENDefaultsArrayForKey(@"Place Types List")
+
 
 #pragma mark Position Calculation Macros
 
+#define DegToRad(deg) deg * (M_PI/180)
+#define RadToDeg(rad) rad * (180/M_PI)
 
+#pragma mark Location Macros
+
+#define CLLocationMake(lat,lng) [[CLLocation alloc] initWithLatitude:(lat) longitude:(lng)]
 
 
 

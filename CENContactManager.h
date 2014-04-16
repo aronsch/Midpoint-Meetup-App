@@ -16,12 +16,9 @@ typedef enum {
     kContactAddSuccess
 } CENContactAddStatus;
 
-extern NSString * const nCENContactAddedNotification;
-extern NSString * const nCENContactRemovedNotification;
-
 @interface CENContactManager : NSObject
 
-@property (strong, nonatomic) NSMutableArray *contacts;
+@property (readonly,strong, nonatomic) NSMutableArray *contacts;
 
 - (instancetype)init;
 
