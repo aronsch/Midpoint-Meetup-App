@@ -7,13 +7,49 @@
 //
 
 #import "CENAppDelegate.h"
+#import "CENCommon.h"
 
 @implementation CENAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self configure];
+    [self notificationDebugLog];
     return YES;
+}
+
+- (void)notificationDebugLog {
+// log all CEN notifications fired
+NSArray *notificationConstants = @[cnCENSearchResultsAdded,
+                                cnCENSearchZeroed,
+                                cnCENUserLocationUpdatedNotification,
+                                cnCENGeocodeCompleted,
+                                cnCENMidpointUpdated,
+                                cnCENETAReturnedNotification,
+                                cnCENContactAddedNotification,
+                                cnCENContactRemovedNotification,
+                                cnCENContactModifiedNotification,
+                                cnCENContactsHaveChangedNotification,
+                                cnCENSearchResultSelectedNotification,
+                                cnCENContactSelectedNotification,
+                                cnCENMapCameraMovedNotification,
+                                cnCENSearchRadiusChangedNotification,
+                                cnCENETARequestedNotification,
+                                cnCENGeocodeRequestedNotification];
+
+
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    for (NSString *constant in notificationConstants) {
+        NSLog(@"%@ subscribed for debugging", constant);
+        [center addObserverForName:constant
+                            object:nil
+                             queue:[NSOperationQueue mainQueue]
+                        usingBlock:^(NSNotification *notification)
+         {
+             NSLog(@"%@ fired", notification.name);
+         }];
+    }
+
 }
 
 - (void)configure {

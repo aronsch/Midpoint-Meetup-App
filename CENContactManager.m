@@ -90,25 +90,25 @@
 #pragma mark - Notification Emission
 
 - (void)emitContactAddedNotificationForContact:(CENContact *)contact {
-    [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactAddedNotification object:contact];
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENContactAddedNotification object:contact];
 }
 
 - (void)emitContactRemovedNotificationForContact:(CENContact *)contact {
-    [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactRemovedNotification object:contact];
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENContactRemovedNotification object:contact];
 }
 
 - (void)emitContactRemovalCompletedNotificationForContact:(CENContact *)contact {
-    [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactRemovedNotification object:contact];
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENContactRemovedNotification object:contact];
 }
 
 - (void)emitContactChangedNotificationForContact:(CENContact *)contact {
-    [[NSNotificationCenter defaultCenter] postNotificationName:nCENContactModifiedNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENContactModifiedNotification
                                                         object:contact];
 }
 
 - (void)emitContactsHaveChangedNotification {
     [[NSNotificationCenter defaultCenter]
-     postNotificationName:nCENContactsHaveChangedNotification
+     postNotificationName:cnCENContactsHaveChangedNotification
      object:[NSArray arrayWithArray:self.contacts]];
 }
 

@@ -29,5 +29,10 @@
     [self setTitle:[self.contact nameFirstLast]];
     [self setSubtitle:@""];
     [self setContactImage:[self.contact contactPhoto]];
+    [self setCoordinate:self.contact.location.coordinate];
+}
+
+-(CLLocation *)location {
+    return CLLocationMake(self.coordinate.latitude, self.coordinate.longitude);
 }
 @end

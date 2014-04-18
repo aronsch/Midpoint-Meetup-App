@@ -13,30 +13,31 @@
 #pragma mark Application Notification Constants Declaration
 
 #pragma mark -Search Notification Constancts
-NSString * const nCENSearchResultsAdded = @"CENSearchResultsAdded";
-NSString * const nCENSearchZeroed = @"CENSearchZeroed";
+NSString * const cnCENSearchResultsAdded = @"CENSearchResultsAdded";
+NSString * const cnCENSearchZeroed = @"CENSearchZeroed";
 
 #pragma mark -Location Manager Notification Constants
-NSString * const nCENUserLocationUpdatedNotification = @"CENUserLocationUpdated";
-NSString * const nCENGeocodeCompleted = @"CENGeocodeCompleted";
-NSString * const nCENMidpointUpdated = @"CENMidpointUpdated";
-NSString * const nCENETAReturnedNotification = @"CENETAReturnedNotification";
+NSString * const cnCENUserLocationUpdatedNotification = @"CENUserLocationUpdated";
+NSString * const cnCENGeocodeCompleted = @"CENGeocodeCompleted";
+NSString * const cnCENMidpointUpdated = @"CENMidpointUpdated";
+NSString * const cnCENETAReturnedNotification = @"CENETAReturnedNotification";
 
 #pragma mark -Contact Notification Constants
-NSString * const nCENContactAddedNotification = @"CENContactAdded";
-NSString * const nCENContactRemovedNotification = @"CENContactRemoved";
-NSString * const nCENContactModifiedNotification = @"CENContactModified";
-NSString * const nCENContactsHaveChangedNotification = @"CENContactsHaveChanged";
+NSString * const cnCENContactAddedNotification = @"CENContactAdded";
+NSString * const cnCENContactRemovedNotification = @"CENContactRemoved";
+NSString * const cnCENContactModifiedNotification = @"CENContactModified";
+NSString * const cnCENContactsHaveChangedNotification = @"CENContactsHaveChanged";
 
 #pragma mark -Map Interaction Notifications
-NSString * const nCENSearchResultSelectedNotification = @"CENSearchResultSelected";
-NSString * const nCENContactSelectedNotification = @"CENContactSelectedNotification";
-NSString * const nCENSearchRadiusChangedNotification = @"CENSearchRadiusChangedNotification";
+NSString * const cnCENSearchResultSelectedNotification = @"CENSearchResultSelected";
+NSString * const cnCENContactSelectedNotification = @"CENContactSelectedNotification";
+NSString * const cnCENSearchRadiusChangedNotification = @"CENSearchRadiusChangedNotification";
+NSString * const cnCENMapCameraMovedNotification = @"CENMapCameraMovedNotification";
 
 #pragma mark -Travel Info View Notifications
-NSString * const nCENETARequestedNotification = @"CENETARequestedNotification";
+NSString * const cnCENETARequestedNotification = @"CENETARequestedNotification";
 
 #pragma mark -Contact Object Notification
-NSString * const nCENGeocodeRequestedNotification = @"CENGeocodeRequestedNotification";
+NSString * const cnCENGeocodeRequestedNotification = @"CENGeocodeRequestedNotification";
 
 @end

@@ -15,7 +15,7 @@
 #import "CENContactAnnotation.h"
 #import "CENSearchResultAnnotation.h"
 #import "CENMapController.h"
-
+#import "CENMapCamera.h"
 #import "CENCommon.h"
 
 @interface CENViewController () <MKMapViewDelegate,CENMapControllerProtocol>
@@ -35,6 +35,10 @@
 @property (strong, nonatomic) NSMutableArray *contactAnnotations;
 @property (strong, nonatomic) NSMutableArray *searchResultAnnotations;
 
+@property (nonatomic, assign) float searchRadius;
+@property (nonatomic, strong) CLLocation *contactsMidpoint;
+@property (atomic, strong) NSMutableArray *overlapCircles;
+
 typedef enum {
     kPanLeft,
     kPanRight,
@@ -52,18 +56,30 @@ typedef enum {
 }
 
 - (void)configure {
+    [self setSearchRadius:CENDefaultSearchRadius];
     [self setupSearchPullTab];
     [self setupContactPullTab];
     [self setLocationManager:[[CENLocationManager alloc] init]];
     [self setMapController:[[CENMapController alloc] initWithDelegate:self]];
     [self.locationManager beginUpdatingLocation];
+    
+    CENMapCamera *camera = [[CENMapCamera alloc] init];
+    [camera setCenterCoordinate:self.mapView.camera.centerCoordinate];
+    [camera setAltitude:self.mapView.camera.altitude];
+    [camera setHeading:self.mapView.camera.heading];
+    [camera setPitch:self.mapView.camera.heading];
+    
+    [self.mapView setCamera:camera];
+    
+    [self subscribeToNotifications];
 }
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 }
 
-#pragma mark - UI Setup
+#pragma mark - Drawer Views Configuration
 
 - (void)setupSearchPullTab {
     CGRect pullTabRect = CGRectMake(0, 428, 66, 66);
@@ -96,6 +112,8 @@ typedef enum {
     [self.view bringSubviewToFront:pullTabView];
     [self configurePanGestureRecognizers];
 }
+
+#pragma mark - Drawer Views Gesture Recognizer Configuration
 
 - (void)configurePanGestureRecognizers {
     UIPanGestureRecognizer *searchTabPanGR = [[UIPanGestureRecognizer alloc]
@@ -218,6 +236,37 @@ typedef enum {
                      }];
 }
 
+#pragma mark - Overlap Circle Overlay Methods
+
+- (void)setUpMidpointOverlap {
+    if (![self overlapCircles]) {
+        [self setOverlapCircles:[[NSMutableArray alloc] init]];
+    }
+    [self removeOverlapCircles];
+    [self midpointOverlap];
+}
+
+- (void)midpointOverlap {
+    NSMutableArray *overlapCircles = [[NSMutableArray alloc] init];
+    
+    for (CENContactAnnotation *contactAnnotation in self.contactAnnotations) {
+        MKCircle *circle = [self circleOverlappingMidpointFromCircleCenter:contactAnnotation.location];
+        [overlapCircles addObject:circle];
+    }
+
+    [self.mapView addOverlays:overlapCircles];
+}
+
+- (void)updateOverlapCircles {
+    [self removeOverlapCircles];
+    [self midpointOverlap];
+}
+
+- (void)removeOverlapCircles {
+    [self.mapView removeOverlays:self.mapView.overlays];
+}
+
+
 #pragma mark - CENMapController Protocol Methods
 
 -(void)addContactAnnotationForContact:(CENContact *)contact {
@@ -236,20 +285,75 @@ typedef enum {
 }
 
 -(void)addSearchResult:(MKPlacemark *)searchResult {
-    
+
 }
+
+
+
+#pragma mark - Notification Emmission
+
+//- (void)emitMapCameraMovedNotification {
+//    
+//    [[NSNotificationCenter defaultCenter]
+//     postNotificationName:cnCENMapCameraMovedNotification
+//     object:self.mapView.camera];
+//}
+//
+//static void *CENContext = &CENContext;
+//
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+//{
+//    if (context == CENContext) {
+//    } else {
+//        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+//    }
+//}
+//
+//- (void)subscribeToCameraChanges {
+//    [self addObserver:self forKeyPath:@"mapView.camera" options:NSKeyValueObservingOptionNew context:CENContext];
+//}
+
 
 
 #pragma mark - Notification Subscription
 
-- (void)subscribeToLocationUpdatedNotification {
+- (void)subscribeToNotifications {
+    [self subscribeToLocationUpdatedNotification];
+    [self subscribeToCameraMovedNotification];
+    [self subscribeToMidpointUpdatedNotification];
+}
+- (void)subscribeToCameraMovedNotification {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:nCENUserLocationUpdatedNotification
+    [center addObserverForName:cnCENMapCameraMovedNotification
                         object:nil
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification)
      {
-         //
+         NSLog(@"%@ recieved", notification.name);
+     }];
+}
+- (void)subscribeToMidpointUpdatedNotification {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:cnCENMidpointUpdated
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification)
+     {
+         id object = notification.object;
+         if ([object isKindOfClass:[CLLocation class]]) {
+             [self setContactsMidpoint:object];
+         }
+     }];
+}
+
+- (void)subscribeToLocationUpdatedNotification {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:cnCENUserLocationUpdatedNotification
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification)
+     {
+         // TODO
      }];
 }
 
@@ -268,7 +372,7 @@ typedef enum {
     }
 }
 
-#pragma mark - Utility
+#pragma mark - Convenience Methods - Rect Geometry
 
 - (BOOL)rectsWithinLeftBoundsForTabRect:(CGRect)tabRect
                           andTargetRect:(CGRect)targetRect {
@@ -288,6 +392,20 @@ typedef enum {
 - (CGFloat)viewMaxX {
     return CGRectGetMaxX(self.view.frame);
 }
+
+#pragma mark - Convenience Methods - Circle Geometry
+
+- (CLLocationDistance)distanceToMidpointForLocation:(CLLocation *)center {
+    return [self.contactsMidpoint distanceFromLocation:center] + self.searchRadius;
+}
+
+- (MKCircle *)circleOverlappingMidpointFromCircleCenter:(CLLocation *)center {
+    CLLocationDistance circleRadius = [self distanceToMidpointForLocation:center];
+    MKCircle *circle = [MKCircle circleWithCenterCoordinate:center.coordinate radius:circleRadius];
+    return circle;
+}
+
+#pragma mark - Convenience Methods - Drawer State Control
 
 - (void)closeOppositeForTabViewGroup:(NSDictionary *)tabViewGroup {
     if ([tabViewGroup isEqual:self.searchPullTabViews]) {

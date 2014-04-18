@@ -29,31 +29,32 @@
 #pragma mark - Application Notification Constants
 
 #pragma mark -Search Notification Constancts
-extern NSString * const nCENSearchResultsAdded;
-extern NSString * const nCENSearchZeroed;
+extern NSString * const cnCENSearchResultsAdded;
+extern NSString * const cnCENSearchZeroed;
 
 #pragma mark -Location Manager Notification Constants
-extern NSString * const nCENUserLocationUpdatedNotification;
-extern NSString * const nCENGeocodeCompleted;
-extern NSString * const nCENMidpointUpdated;
-extern NSString * const nCENETAReturnedNotification;
+extern NSString * const cnCENUserLocationUpdatedNotification;
+extern NSString * const cnCENGeocodeCompleted;
+extern NSString * const cnCENMidpointUpdated;
+extern NSString * const cnCENETAReturnedNotification;
 
 #pragma mark -Contact Notification Constants
-extern NSString * const nCENContactAddedNotification;
-extern NSString * const nCENContactRemovedNotification;
-extern NSString * const nCENContactModifiedNotification;
-extern NSString * const nCENContactsHaveChangedNotification;
+extern NSString * const cnCENContactAddedNotification;
+extern NSString * const cnCENContactRemovedNotification;
+extern NSString * const cnCENContactModifiedNotification;
+extern NSString * const cnCENContactsHaveChangedNotification;
 
 #pragma mark -Map Interaction Notifications
-extern NSString * const nCENSearchResultSelectedNotification;
-extern NSString * const nCENContactSelectedNotification;
-extern NSString * const nCENSearchRadiusChangedNotification;
+extern NSString * const cnCENSearchResultSelectedNotification;
+extern NSString * const cnCENContactSelectedNotification;
+extern NSString * const cnCENSearchRadiusChangedNotification;
+extern NSString * const cnCENMapCameraMovedNotification;
 
 #pragma mark -Travel Info View Notifications
-extern NSString * const nCENETARequestedNotification;
+extern NSString * const cnCENETARequestedNotification;
 
 #pragma mark -Contact Object Notification
-extern NSString * const nCENGeocodeRequestedNotification;
+extern NSString * const cnCENGeocodeRequestedNotification;
 
 @end
 

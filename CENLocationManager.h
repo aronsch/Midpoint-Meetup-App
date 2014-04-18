@@ -18,9 +18,4 @@
 - (void)beginUpdatingLocation;
 - (void)stopUpdatingLocation;
 
-#pragma mark - Geocoding Services
-
-- (void)geocodeAddress:(NSString *)address
-       completionBlock:(void (^)(BOOL succeeded, CLPlacemark*))completionBlock;
-
 @end

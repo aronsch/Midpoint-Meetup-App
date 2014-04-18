@@ -12,6 +12,8 @@
 
 @protocol CENMapControllerProtocol <NSObject>
 
+
+
 - (void)addContactAnnotationForContact:(CENContact *)contact;
 - (void)removeContactAnnotationForContact:(CENContact *)contact;
 
@@ -23,6 +25,9 @@
 @end
 
 @interface CENMapController : NSObject
+
+// public property for storyboard object.
+@property (strong, nonatomic) IBOutlet id delegate;
 
 - (id)initWithDelegate:(id)delegate;
 

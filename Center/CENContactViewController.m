@@ -98,7 +98,6 @@
     
     [self.contactManager addContactWithCENContactABInfo:abInfo
                                         completionBlock:^(CENContactAddStatus status, CENContact *contact){
-                                            NSLog(@"block fired");
                                             switch (status) {
                                                 case kFailedContactExists:
                                                     [weakSelf displayContactExistsAlertForContact:contact];
@@ -132,7 +131,7 @@
 // Dismisses the people picker and shows the application when users tap Cancel.
 - (void)peoplePickerNavigationControllerDidCancel:(ABPeoplePickerNavigationController *)peoplePicker;
 {
-	[self dismissViewControllerAnimated:YES completion:NULL];
+    [peoplePicker dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Address Book Access
@@ -232,7 +231,7 @@
 
 - (void)subscribeToContactAddedNotification {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:nCENContactAddedNotification
+    [center addObserverForName:cnCENContactAddedNotification
                         object:nil
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification)
@@ -243,7 +242,7 @@
 
 - (void)subscribeToContactRemovedNotification {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:nCENContactRemovedNotification
+    [center addObserverForName:cnCENContactRemovedNotification
                         object:nil
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification)

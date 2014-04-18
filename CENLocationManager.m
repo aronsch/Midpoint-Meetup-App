@@ -33,6 +33,7 @@
     [self.locationManager setDelegate:self];
     [self.locationManager setDesiredAccuracy:kCLLocationAccuracyHundredMeters];
     [self.locationManager setDistanceFilter:CENDefaultLocationDelta];
+    [self subscribeToNotifications];
 }
 
 #pragma mark - CLLocationManagerDelegate Methods
@@ -85,16 +86,18 @@
 #pragma mark - Notification Emission
 
 - (void)emitUserLocationUpdatedNotification {
-    [[NSNotificationCenter defaultCenter] postNotificationName:nCENUserLocationUpdatedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENUserLocationUpdatedNotification object:nil];
 }
 
 #pragma mark - Notification Handling
 
+- (void)subscribeToNotifications {
+    [self subscribeToGeocodingRequestNotification];
+}
+
 - (void)subscribeToGeocodingRequestNotification {
-    __weak CENLocationManager *weakSelf = self;
-    
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:nCENGeocodeRequestedNotification
+    [center addObserverForName:cnCENGeocodeRequestedNotification
                         object:nil
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification)

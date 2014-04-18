@@ -21,4 +21,6 @@
 @property(nonatomic, copy) NSString *subtitle;
 @property(nonatomic, strong) UIImage *contactImage;
 
+- (CLLocation *)location;
+
 @end

@@ -11,7 +11,7 @@
 @interface CENContact ()
 
 @property (nonatomic, copy) NSNumber *contactID;
-@property (readwrite, strong, nonatomic) CLLocation *location;
+//@property (readwrite, strong, nonatomic) CLLocation *location;
 
 @end
 
@@ -42,8 +42,7 @@
                     @"imageData": [self thumbnailForABContact:contact]};
     
     self.contactID = [NSNumber numberWithInt:ABRecordGetRecordID(contact)];
-    NSLog(@"%i",[self.contactID intValue]);
-    
+    [self emitGeocodingRequest];
 }
 
 - (NSData *)thumbnailForABContact:(ABRecordRef)contact {
@@ -149,14 +148,17 @@
     return [self.contactID intValue] == contactID;
 }
 
+
+
+
 #pragma mark - Notification Emission
 
 - (void)emitGeocodingRequest {
-    [[NSNotificationCenter defaultCenter] postNotificationName:nCENGeocodeRequestedNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENGeocodeRequestedNotification object:self];
 }
 
 - (void)emitLocationAvailable {
-    [[NSNotificationCenter defaultCenter] postNotificationName:nCENGeocodeCompleted object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENGeocodeCompleted object:self];
 }
 
 @end

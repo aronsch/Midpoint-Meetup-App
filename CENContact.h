@@ -41,7 +41,7 @@ typedef struct {
 - (Boolean)isEqualToABContact:(ABRecordRef)contact;
 
 #pragma mark - CENGeoInformationProtocol
-@property (readonly, strong, nonatomic) CLLocation *location;
+@property (readwrite, strong, nonatomic) CLLocation *location;
 - (void)setLocation:(CLLocation *)location;
 
 

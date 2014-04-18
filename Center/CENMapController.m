@@ -24,6 +24,7 @@
     if (!self) {
         return nil;
     }
+    [self setDelegate:delegate];
     [self subscribeToNotifications];
     return self;
 }
@@ -74,7 +75,7 @@
 #pragma mark - Notification Emmision
 
 - (void)emitMidpointUpdatedWithLocation:(CLLocation *)location {
-    [[NSNotificationCenter defaultCenter] postNotificationName:nCENMidpointUpdated
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENMidpointUpdated
                                                         object:location];
 }
 
@@ -89,7 +90,7 @@
 
 - (void)subscribeToLocationUpdatedNotification {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:nCENUserLocationUpdatedNotification
+    [center addObserverForName:cnCENUserLocationUpdatedNotification
                         object:nil
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification)
@@ -102,14 +103,13 @@
     // When objects conforming to the CENGeoInformationProtocol have been
     // geocoded, check their class and see if they should be displayed.
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:nCENGeocodeCompleted
+    [center addObserverForName:cnCENGeocodeCompleted
                         object:nil
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification)
      {
          id object = notification.object;
          if ([object conformsToProtocol:@protocol(CENGeoInformationProtocol)]) {
-             
              // Check object class and handle appropriately
              if ([object isKindOfClass:[CENContact class]]) {
                  [self.delegate addContactAnnotationForContact:object];
@@ -123,7 +123,7 @@
 
 - (void)subscribeToContactRemovedNotification {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:nCENContactRemovedNotification
+    [center addObserverForName:cnCENContactRemovedNotification
                         object:nil
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification)
@@ -137,7 +137,7 @@
 
 - (void)subscribeToContactsHaveChangedNotification {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:nCENContactsHaveChangedNotification
+    [center addObserverForName:cnCENContactsHaveChangedNotification
                         object:nil
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification)
