@@ -6,18 +6,18 @@
 //  Copyright (c) 2014 Aron Schneider. All rights reserved.
 //
 
-#import "CENLocationManager.h"
+#import "CENLocationController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "CENCommon.h"
 
-@interface CENLocationManager () <CLLocationManagerDelegate>
+@interface CENLocationController () <CLLocationManagerDelegate>
 
 @property (strong, nonatomic)CLLocationManager *locationManager;
 @property (readwrite, strong, nonatomic) CLLocation *userLocation;
 
 @end
 
-@implementation CENLocationManager
+@implementation CENLocationController
 
 
 -(id)init {
@@ -43,6 +43,11 @@
     [self setUserLocation:newLocation];
     
 }
+
+-(void)setUserLocation:(CLLocation *)userLocation {
+    _userLocation = userLocation;
+    [self emitUserLocationUpdatedNotification];
+}
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
     if ([error code] != kCLErrorLocationUnknown) {
         //        [self stopUpdatingLocation:NSLocalizedString(@"Error", @"Error")];
@@ -59,7 +64,7 @@
     [self.locationManager stopUpdatingLocation];
 }
 
-#pragma mark - Geocoding Services
+#pragma mark - Geocoding Request Dispatch
 
 -(void)geocodeAddress:(NSString *)address
                    completionBlock:(void (^)(BOOL succeeded, CLPlacemark*))completionBlock {
@@ -86,7 +91,9 @@
 #pragma mark - Notification Emission
 
 - (void)emitUserLocationUpdatedNotification {
-    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENUserLocationUpdatedNotification object:nil];
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:cnCENUserLocationUpdatedNotification
+     object:self.userLocation];
 }
 
 #pragma mark - Notification Handling
@@ -96,17 +103,15 @@
 }
 
 - (void)subscribeToGeocodingRequestNotification {
+    
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center addObserverForName:cnCENGeocodeRequestedNotification
                         object:nil
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification)
      {
-         // Check if the object provided by notification conforms to the geographic information protocol.
-         // It should be able to provide geographic search information and have its location property set.
          if ([notification.object conformsToProtocol:@protocol(CENGeoInformationProtocol)]) {
-             
-             // Set block safe variable for object and assert that it conforms to Geo Info protocol.
+
              __block NSObject<CENGeoInformationProtocol> *object = notification.object;
              
              [self geocodeAddress:[object addressAsString] completionBlock:^(BOOL succeeded, CLPlacemark *placemark) {
@@ -114,6 +119,10 @@
                      [object setLocation:placemark.location];
                  }
              }];
+         }
+         else {
+             // Raise Protocol Exception
+             [CENCommon exceptionObjectDoesNotConformToCENGeoInformationProtocol:notification.object];
          }
      }];
 }

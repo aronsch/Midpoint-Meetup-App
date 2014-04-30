@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 @class CLLocation;
 @class CLPlacemark;
+#import <MapKit/MapKit.h>
 
 @protocol CENGeoInformationProtocol <NSObject>
 // Protocol indicating that an object can produce a string describing
@@ -34,7 +35,7 @@ extern NSString * const cnCENSearchZeroed;
 
 #pragma mark -Location Manager Notification Constants
 extern NSString * const cnCENUserLocationUpdatedNotification;
-extern NSString * const cnCENGeocodeCompleted;
+extern NSString * const cnCENLocationAvailableNotification;
 extern NSString * const cnCENMidpointUpdated;
 extern NSString * const cnCENETAReturnedNotification;
 
@@ -48,15 +49,31 @@ extern NSString * const cnCENContactsHaveChangedNotification;
 extern NSString * const cnCENSearchResultSelectedNotification;
 extern NSString * const cnCENContactSelectedNotification;
 extern NSString * const cnCENSearchRadiusChangedNotification;
-extern NSString * const cnCENMapCameraMovedNotification;
+extern NSString * const cnCENSearchRadiusRectChangedNotification;
+extern NSString * const cnCENMapRegionWillChangeNotification;
+extern NSString * const cnCENMapRegionDidChangeNotification;
 
 #pragma mark -Travel Info View Notifications
 extern NSString * const cnCENETARequestedNotification;
 
-#pragma mark -Contact Object Notification
+#pragma mark -CENGeoInformationProtocol Notification
 extern NSString * const cnCENGeocodeRequestedNotification;
 
+#pragma mark - Standard Exceptions
++(void)exceptionObjectDoesNotConformToCENGeoInformationProtocol:(id)object;
++(void)exceptionClassExpected:(Class)expectedClass
+      forNotification:(NSNotification *)notification;
 @end
+
+#pragma - Standard Geometry Functions
+
+CGPoint RectGetCenter( CGRect rect);
+CGRect RectAroundCenter( CGPoint center, CGSize size);
+CGRect RectCenteredInRect( CGRect rect, CGRect mainRect);
+
+#pragma - Map Geometry Functions
+
+MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region);
 
 #pragma mark - Macros
 
@@ -82,7 +99,14 @@ extern NSString * const cnCENGeocodeRequestedNotification;
 #pragma mark Location Macros
 
 #define CLLocationMake(lat,lng) [[CLLocation alloc] initWithLatitude:(lat) longitude:(lng)]
+#define CLLocationWithCLLocationCoordinate2D(coordinate) [[CLLocation alloc] initWithLatitude:(coordinate).latitude longitude:(coordinate).longitude]
 
+#define CLLocationCoordinate2DWithLocation(location) CLLocationCoordinate2DMake((location).coordinate.latitude, (location).coordinate.longitude)
+
+
+#pragma mark - DEBUG
+
+#define NSLogRect(rect, loglabel) NSLog(@"%@ rect \r xOrig: %f \r yOrig: %f \r width: %f \r height: %f ", (loglabel), (rect).origin.x, (rect).origin.y, (rect).size.width, (rect).size.height);
 
 
 

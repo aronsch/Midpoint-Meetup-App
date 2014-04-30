@@ -23,7 +23,7 @@
 NSArray *notificationConstants = @[cnCENSearchResultsAdded,
                                 cnCENSearchZeroed,
                                 cnCENUserLocationUpdatedNotification,
-                                cnCENGeocodeCompleted,
+                                cnCENLocationAvailableNotification,
                                 cnCENMidpointUpdated,
                                 cnCENETAReturnedNotification,
                                 cnCENContactAddedNotification,
@@ -32,8 +32,10 @@ NSArray *notificationConstants = @[cnCENSearchResultsAdded,
                                 cnCENContactsHaveChangedNotification,
                                 cnCENSearchResultSelectedNotification,
                                 cnCENContactSelectedNotification,
-                                cnCENMapCameraMovedNotification,
+                                cnCENMapRegionWillChangeNotification,
+                                cnCENMapRegionDidChangeNotification,
                                 cnCENSearchRadiusChangedNotification,
+                                cnCENSearchRadiusRectChangedNotification,
                                 cnCENETARequestedNotification,
                                 cnCENGeocodeRequestedNotification];
 
@@ -47,9 +49,11 @@ NSArray *notificationConstants = @[cnCENSearchResultsAdded,
                         usingBlock:^(NSNotification *notification)
          {
              NSLog(@"%@ fired", notification.name);
+             NSLog(@"%@ payload: %@ object",
+                   notification.name,
+                   NSStringFromClass([notification.object class]));
          }];
     }
-
 }
 
 - (void)configure {

@@ -39,15 +39,17 @@
 }
 
 - (void)addContact:(CENContact *)contact {
-    if (self.contacts.count == 0) {
-    }
     [self.contacts addObject:contact];
+    
     [self emitContactAddedNotificationForContact:contact];
+    [self emitContactsHaveChangedNotification];
 }
 
 - (void)removeContact:(CENContact *)contact {
     [self.contacts removeObject:contact];
+    
     [self emitContactRemovedNotificationForContact:contact];
+    [self emitContactsHaveChangedNotification];
 }
 
 - (CENContact *)contactAtIndex:(NSUInteger)index {

@@ -10,17 +10,22 @@
 #import <MapKit/MapKit.h>
 #import "CENSearchViewController.h"
 #import "CENContactViewController.h"
-#import "CENLocationManager.h"
+#import "CENLocationController.h"
 #import "CENContactManager.h"
 #import "CENContactAnnotation.h"
 #import "CENSearchResultAnnotation.h"
 #import "CENMapController.h"
-#import "CENMapCamera.h"
 #import "CENCommon.h"
+#import "CENContactsMidpointAnnotation.h"
+#import "CENContactMidpointAnnotationView.h"
+#import "CENSearchRadiusControlAnnotation.h"
+#import "CENSearchRadiusControlAnnotationView.h"
+#import "CENMapView.h"
 
 @interface CENViewController () <MKMapViewDelegate,CENMapControllerProtocol>
 
-@property (weak, nonatomic) IBOutlet MKMapView *mapView;
+@property (weak, nonatomic) IBOutlet CENMapView *mapView;
+
 @property (weak, nonatomic) CENSearchViewController *searchViewController;
 @property (weak, nonatomic) CENContactViewController *contactViewController;
 @property (weak, nonatomic) UIView *searchPullTab;
@@ -28,15 +33,19 @@
 @property (strong, nonatomic) NSMutableDictionary *searchPullTabViews;
 @property (strong, nonatomic) NSMutableDictionary *contactPullTabViews;
 
-@property (strong, nonatomic) CENLocationManager *locationManager;
+@property (strong, nonatomic) CENLocationController *locationManager;
 @property (strong, nonatomic) CENContactManager *contactManager;
 @property (strong, nonatomic) CENMapController *mapController;
 
 @property (strong, nonatomic) NSMutableArray *contactAnnotations;
 @property (strong, nonatomic) NSMutableArray *searchResultAnnotations;
+@property (strong, nonatomic) CENContactsMidpointAnnotation *midPointAnnotation;
+@property (strong, nonatomic) CENSearchRadiusControlAnnotation *midPointSearchAreaHandleAnnotation;
+@property (strong, nonatomic) CENContactMidpointAnnotationView *midPointAnnotationView;
+@property (strong, nonatomic) CENSearchRadiusControlAnnotationView *searchAreaHandleView;
 
-@property (nonatomic, assign) float searchRadius;
-@property (nonatomic, strong) CLLocation *contactsMidpoint;
+@property (nonatomic, assign) CLLocationDistance searchRadius;
+@property (nonatomic, strong) CLLocation *userLocation;
 @property (atomic, strong) NSMutableArray *overlapCircles;
 
 typedef enum {
@@ -49,8 +58,7 @@ typedef enum {
 
 @implementation CENViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     [self configure];
 }
@@ -59,23 +67,13 @@ typedef enum {
     [self setSearchRadius:CENDefaultSearchRadius];
     [self setupSearchPullTab];
     [self setupContactPullTab];
-    [self setLocationManager:[[CENLocationManager alloc] init]];
+    [self setLocationManager:[[CENLocationController alloc] init]];
     [self setMapController:[[CENMapController alloc] initWithDelegate:self]];
     [self.locationManager beginUpdatingLocation];
-    
-    CENMapCamera *camera = [[CENMapCamera alloc] init];
-    [camera setCenterCoordinate:self.mapView.camera.centerCoordinate];
-    [camera setAltitude:self.mapView.camera.altitude];
-    [camera setHeading:self.mapView.camera.heading];
-    [camera setPitch:self.mapView.camera.heading];
-    
-    [self.mapView setCamera:camera];
-    
     [self subscribeToNotifications];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
 
@@ -113,6 +111,7 @@ typedef enum {
     [self configurePanGestureRecognizers];
 }
 
+
 #pragma mark - Drawer Views Gesture Recognizer Configuration
 
 - (void)configurePanGestureRecognizers {
@@ -132,6 +131,7 @@ typedef enum {
     [self.contactPullTab addGestureRecognizer:contactTabPanGR];
     
 }
+
 
 #pragma mark - Gesture Handling
 
@@ -186,6 +186,7 @@ typedef enum {
     [panGR setTranslation:CGPointZero inView:self.view];
 }
 
+
 #pragma mark - UI Animation
 
 - (void)hideTabViewGroup:(NSMutableDictionary *)tabViewGroup {
@@ -236,6 +237,7 @@ typedef enum {
                      }];
 }
 
+
 #pragma mark - Overlap Circle Overlay Methods
 
 - (void)setUpMidpointOverlap {
@@ -244,35 +246,175 @@ typedef enum {
     }
     [self removeOverlapCircles];
     [self midpointOverlap];
+    [self updateMidpointAnnotations];
 }
 
 - (void)midpointOverlap {
-    NSMutableArray *overlapCircles = [[NSMutableArray alloc] init];
-    
-    for (CENContactAnnotation *contactAnnotation in self.contactAnnotations) {
-        MKCircle *circle = [self circleOverlappingMidpointFromCircleCenter:contactAnnotation.location];
-        [overlapCircles addObject:circle];
+    if (self.contactAnnotations.count > 1) {
+        NSMutableArray *overlapCircles = [[NSMutableArray alloc] init];
+        
+        for (CENContactAnnotation *contactAnnotation in self.contactAnnotations) {
+            MKCircle *circle = [self circleOverlappingMidpointFromLocation:contactAnnotation.location];
+            [overlapCircles addObject:circle];
+        }
+
+        [self.mapView addOverlays:overlapCircles];
     }
-
-    [self.mapView addOverlays:overlapCircles];
-}
-
-- (void)updateOverlapCircles {
-    [self removeOverlapCircles];
-    [self midpointOverlap];
 }
 
 - (void)removeOverlapCircles {
     [self.mapView removeOverlays:self.mapView.overlays];
 }
 
+- (void)updateMidpointAnnotations {
+    CLLocation *newMidpoint = [self contactsMidpoint];
+    if (self.midPointAnnotation) {
+        [self.midPointAnnotation setLocation:newMidpoint];
+    }
+    else {
+        CENContactsMidpointAnnotation *mpa = [[CENContactsMidpointAnnotation alloc]
+                                              initWithLocation:newMidpoint];
+        [self setMidPointAnnotation:mpa];
+        [self.mapView addAnnotation:self.midPointAnnotation];
+        [self emitSearchRadiusChangedNotification];
+        
+    }
+    
+    CLLocation *searchRadiusControlLoc = CLLocationWithCLLocationCoordinate2D([self searchRadiusControlCoordinate]);
+    if (self.midPointSearchAreaHandleAnnotation) {
+        [self.midPointSearchAreaHandleAnnotation setLocation:searchRadiusControlLoc];
+    }
+    else {
+        CENSearchRadiusControlAnnotation *handle = [CENSearchRadiusControlAnnotation annotationWithLocation:searchRadiusControlLoc];
+        [self setMidPointSearchAreaHandleAnnotation:handle];
+        [self.mapView addAnnotation:self.midPointSearchAreaHandleAnnotation];
+    }
+    
+    [self.midPointAnnotationView setNeedsDisplay];
+    [self.searchAreaHandleView setNeedsDisplay];
+}
+
+
+#pragma mark - MKMapviewDelegate Protocol
+
+#pragma mark Annotation Views (MKMapviewDelegate Protocol)
+
+-(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    
+    
+    // Midpoint Search Area Annotation View
+    if ([annotation isKindOfClass:[CENContactsMidpointAnnotation class]]) {
+        if (self.midPointAnnotationView) {
+            [self.midPointAnnotationView setAnnotation:annotation];
+        }
+        else {
+            self.midPointAnnotationView = [CENContactMidpointAnnotationView withAnnotation:annotation andFrame:[self searchRegionCGRect]];
+        }
+        return self.midPointAnnotationView;
+    }
+    
+    // Midpoint Search Area Drag Handle Annotation View
+    if ([annotation isKindOfClass:[CENSearchRadiusControlAnnotation class]]) {
+        if (self.searchAreaHandleView) {
+            [self.searchAreaHandleView setAnnotation:annotation];
+        }
+        else {
+            self.searchAreaHandleView = [CENSearchRadiusControlAnnotationView withAnnotation:annotation andFrame:[self searchRegionCGRect]];
+        }
+        [self.searchAreaHandleView setCenterPoint:[self searchRegionCenterPoint]];
+        return self.searchAreaHandleView;
+    }
+    
+    
+    // Contact Annotation View
+    if ([annotation isKindOfClass:[CENContactAnnotation class]]) {
+        MKAnnotationView *annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:@"CENContactAnnotation"];
+        if (!annotationView) {
+            annotationView = [[MKPinAnnotationView alloc] init];
+        }
+        return annotationView;
+    }
+    
+    return nil;
+}
+
+#pragma mark Draggable Annotations (MKMapviewDelegate Protocol)
+
+-(void)mapView:(MKMapView *)mapView
+annotationView:(MKAnnotationView *)view
+didChangeDragState:(MKAnnotationViewDragState)newState
+  fromOldState:(MKAnnotationViewDragState)oldState {
+    if ([view isKindOfClass:[CENSearchRadiusControlAnnotationView class]]) {
+        [self handleSearchRadiusControlDragwithmapView:mapView
+                                        annotationView:view
+                                    didChangeDragState:newState
+                                          fromOldState:oldState];
+    }
+}
+
+- (void)handleSearchRadiusControlDragwithmapView:(MKMapView *)mapView
+                                  annotationView:(MKAnnotationView *)view
+                              didChangeDragState:(MKAnnotationViewDragState)newState
+                                    fromOldState:(MKAnnotationViewDragState)oldState {
+    if (newState == MKAnnotationViewDragStateEnding) {
+        CENSearchRadiusControlAnnotation *controlAnnotation = view.annotation;
+        CLLocation *controlAnnotationLoc = [controlAnnotation annotationLocation];
+        
+        CLLocationDistance newSearchRadius = [controlAnnotationLoc distanceFromLocation:[self.midPointAnnotation annotationLocation]];
+        [view setDragState:MKAnnotationViewDragStateNone animated:YES];
+        [self setSearchRadius:newSearchRadius];
+        [self.midPointAnnotationView setVisible:YES animate:YES withNewFrame:self.searchRegionCGRect];
+        [self setUpMidpointOverlap];
+    }
+    else if (view.dragState == MKAnnotationViewDragStateDragging) {
+    }
+    
+    else if (newState == MKAnnotationViewDragStateCanceling) {
+        // custom code when drag canceled...
+        
+        // tell the annotation view that the drag is done
+        [view setDragState:MKAnnotationViewDragStateNone animated:YES];
+    }
+}
+
+
+#pragma mark Map Movement (MKMapviewDelegate Protocol)
+
+-(void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated {
+    [self.midPointAnnotationView setVisible:NO animate:YES];
+}
+
+-(void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
+    [self.searchAreaHandleView setCenterPoint:[self searchRegionCenterPoint]];
+    [self.midPointAnnotationView setVisible:YES animate:YES withNewFrame:self.searchRegionCGRect];
+}
+
+
+#pragma mark Overlay View Renderers (MKMapviewDelegate Protocol)
+
+- (MKOverlayRenderer *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
+    if ([overlay isKindOfClass:[MKCircle class]]) {
+        MKCircleRenderer *view = [[MKCircleRenderer alloc] initWithOverlay:overlay];
+        view.fillColor = [[UIColor blueColor] colorWithAlphaComponent:0.08];
+        view.strokeColor = [[UIColor blueColor] colorWithAlphaComponent:0.1];
+        view.lineWidth = 1;
+        
+        return view;
+    }
+    return nil;
+}
+
 
 #pragma mark - CENMapController Protocol Methods
 
 -(void)addContactAnnotationForContact:(CENContact *)contact {
+    if (!self.contactAnnotations) {
+        _contactAnnotations = [[NSMutableArray alloc] init];
+    }
     CENContactAnnotation *contactAnnotation = [CENContactAnnotation annotationForContact:contact];
     [self.mapView addAnnotation:contactAnnotation];
     [self.contactAnnotations addObject:contactAnnotation];
+    [self setUpMidpointOverlap];
 }
 
 -(void)removeContactAnnotationForContact:(CENContact *)contact {
@@ -280,38 +422,41 @@ typedef enum {
         if ([contactAnnotation.contact isEqual:contact]) {
             [self.mapView removeAnnotation:contactAnnotation];
             [self.contactAnnotations removeObject:contactAnnotation];
+            [self setUpMidpointOverlap];
         }
     }
 }
 
--(void)addSearchResult:(MKPlacemark *)searchResult {
-
+-(void)removeAllAnnotation {
+    // TODO
 }
 
+-(void)removeSearchResult:(MKPlacemark *)searchResult {
+    //TODO
+}
+
+-(void)addSearchResult:(MKPlacemark *)searchResult {
+    // TODO
+}
 
 
 #pragma mark - Notification Emmission
 
-//- (void)emitMapCameraMovedNotification {
-//    
-//    [[NSNotificationCenter defaultCenter]
-//     postNotificationName:cnCENMapCameraMovedNotification
-//     object:self.mapView.camera];
-//}
-//
-//static void *CENContext = &CENContext;
-//
-//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-//{
-//    if (context == CENContext) {
-//    } else {
-//        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-//    }
-//}
-//
-//- (void)subscribeToCameraChanges {
-//    [self addObserver:self forKeyPath:@"mapView.camera" options:NSKeyValueObservingOptionNew context:CENContext];
-//}
+- (void)emitSearchRadiusChangedNotification {
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENSearchRadiusChangedNotification object:nil];
+}
+
+- (void)emitMapRegionWillChangeNotification {
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:cnCENMapRegionWillChangeNotification
+     object:[NSValue valueWithCGRect:[self searchRegionCGRect]]];
+}
+
+- (void)emitMapRegionDidChangeNotification {
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:cnCENMapRegionDidChangeNotification
+     object:[NSValue valueWithCGRect:[self searchRegionCGRect]]];
+}
 
 
 
@@ -319,32 +464,8 @@ typedef enum {
 
 - (void)subscribeToNotifications {
     [self subscribeToLocationUpdatedNotification];
-    [self subscribeToCameraMovedNotification];
-    [self subscribeToMidpointUpdatedNotification];
 }
-- (void)subscribeToCameraMovedNotification {
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:cnCENMapCameraMovedNotification
-                        object:nil
-                         queue:[NSOperationQueue mainQueue]
-                    usingBlock:^(NSNotification *notification)
-     {
-         NSLog(@"%@ recieved", notification.name);
-     }];
-}
-- (void)subscribeToMidpointUpdatedNotification {
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    [center addObserverForName:cnCENMidpointUpdated
-                        object:nil
-                         queue:[NSOperationQueue mainQueue]
-                    usingBlock:^(NSNotification *notification)
-     {
-         id object = notification.object;
-         if ([object isKindOfClass:[CLLocation class]]) {
-             [self setContactsMidpoint:object];
-         }
-     }];
-}
+
 
 - (void)subscribeToLocationUpdatedNotification {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -353,7 +474,16 @@ typedef enum {
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification)
      {
-         // TODO
+         id object = notification.object;
+         if ([object isKindOfClass:[CLLocation class]]) {
+             CLLocation *userLocation = (CLLocation *)object;
+             if (!self.userLocation) {
+                 MKCoordinateRegion userRegion = MKCoordinateRegionMakeWithDistance(userLocation.coordinate,
+                                                                                    15000, 15000);
+                 [self.mapView setRegion:userRegion animated:NO];
+             }
+             [self setUserLocation:userLocation];
+         }
      }];
 }
 
@@ -395,13 +525,13 @@ typedef enum {
 
 #pragma mark - Convenience Methods - Circle Geometry
 
-- (CLLocationDistance)distanceToMidpointForLocation:(CLLocation *)center {
-    return [self.contactsMidpoint distanceFromLocation:center] + self.searchRadius;
+- (CLLocationDistance)distanceToMidpointForLocation:(CLLocation *)location {
+    return [self.contactsMidpoint distanceFromLocation:location] + self.searchRadius;
 }
 
-- (MKCircle *)circleOverlappingMidpointFromCircleCenter:(CLLocation *)center {
-    CLLocationDistance circleRadius = [self distanceToMidpointForLocation:center];
-    MKCircle *circle = [MKCircle circleWithCenterCoordinate:center.coordinate radius:circleRadius];
+- (MKCircle *)circleOverlappingMidpointFromLocation:(CLLocation *)location {
+    CLLocationDistance circleRadius = [self distanceToMidpointForLocation:location];
+    MKCircle *circle = [MKCircle circleWithCenterCoordinate:location.coordinate radius:circleRadius];
     return circle;
 }
 
@@ -417,5 +547,93 @@ typedef enum {
         [self hideTabViewGroup:self.searchPullTabViews];
     }
 }
+
+#pragma mark - Geographic Midpoint Calculation
+
+-(CLLocation *)contactsMidpoint {
+    NSInteger count = self.contactAnnotations.count;
+    
+    double tX = 0, tY = 0, tZ = 0;
+    double avgX = 0, avgY = 0, avgZ = 0;
+    
+    for (CENContactAnnotation *contactAnnotation in self.contactAnnotations) {
+        CLLocationCoordinate2D coordinate = contactAnnotation.location.coordinate;
+        double lat = coordinate.latitude;
+        double lng = coordinate.longitude;
+        // degrees to radians
+        lat = DegToRad(lat);
+        lng = DegToRad(lng);
+        // radian to cartesian coordinates
+        double cX = cos(lat) * cos(lng);
+        double cY = cos(lat) * sin(lng);
+        double cZ = sin(lat);
+        // add to running total of cartesian axis positions
+        tX += cX;
+        tY += cY;
+        tZ += cZ;
+    }
+    
+    // average cartesian position
+    avgX = tX/count;
+    avgY = tY/count;
+    avgZ = tZ/count;
+    // cartesian to radians
+    double lng = atan2(avgY, avgX);
+    double hyp = sqrt((avgX * avgX) + (avgY * avgY));
+    double lat = atan2(avgZ, hyp);
+    // radians to degrees
+    lat = RadToDeg(lat);
+    lng = RadToDeg(lng);
+    
+    return CLLocationMake(lat, lng);
+}
+
+
+
+#pragma mark - Map Coordinate to View Coordinate Translation
+
+- (CGRect)searchRegionCGRect {
+    MKCoordinateRegion searchRegion = [self searchRegion];
+    CGRect searchRegionRect = [self.mapView convertRegion:searchRegion toRectToView:self.view];
+    return searchRegionRect;
+}
+
+- (CLLocationCoordinate2D )searchRadiusControlCoordinate {
+    // Calculate where to place the search radius control annotation
+    MKMapRect searchAreaRect = MKMapRectForCoordinateRegion([self searchRegion]);
+    MKMapPoint controlCenter = MKMapPointMake(MKMapRectGetMaxX(searchAreaRect), MKMapRectGetMaxY(searchAreaRect));
+    CLLocationCoordinate2D controlCenterCoord = MKCoordinateForMapPoint(controlCenter);
+    return controlCenterCoord;
+}
+
+- (MKCoordinateRegion)searchRegion {
+    return MKCoordinateRegionMakeWithDistance([self.midPointAnnotation coordinate],
+                                              self.searchRadius*2,
+                                              self.searchRadius*2);
+}
+
+- (CGPoint)searchRegionCenterPoint {
+    CLLocationCoordinate2D midpointCoordinate = self.midPointAnnotation.coordinate;
+    return [self.mapView convertCoordinate:midpointCoordinate toPointToView:self.mapView];
+}
+
+- (CGRect)midpointOverlapRectForContactAnnotation:(CENContactAnnotation *)cAnnotation {
+    CLLocationDistance distanceToCenter = [cAnnotation.location distanceFromLocation:[self.midPointAnnotation annotationLocation]];
+    MKCoordinateRegion overlapRegion = MKCoordinateRegionMakeWithDistance(cAnnotation.coordinate,
+                                                                          distanceToCenter,
+                                                                          distanceToCenter);
+    CGRect midpointOverlapRect = [self.mapView convertRegion:overlapRegion toRectToView:self.view];
+    return midpointOverlapRect;
+}
+
+
+#pragma mark - Custom Setters
+
+-(void)setSearchRadius:(CLLocationDistance)searchRadius {
+    _searchRadius = searchRadius;
+    [self emitSearchRadiusChangedNotification];
+}
+
+
 
 @end

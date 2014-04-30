@@ -158,7 +158,7 @@
 }
 
 - (void)emitLocationAvailable {
-    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENGeocodeCompleted object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENLocationAvailableNotification object:self];
 }
 
 @end

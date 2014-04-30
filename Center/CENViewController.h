@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-@class CENContact;
+
 
 @interface CENViewController : UIViewController
+
+- (CGRect)searchRegionCGRect;
 
 @end

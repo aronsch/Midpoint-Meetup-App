@@ -26,9 +26,6 @@
 
 @interface CENMapController : NSObject
 
-// public property for storyboard object.
-@property (strong, nonatomic) IBOutlet id delegate;
-
 - (id)initWithDelegate:(id)delegate;
 
 @end
