@@ -11,13 +11,12 @@
 #import "CENCommon.h"
 #import <QuartzCore/QuartzCore.h>
 
-
-
 @interface CENContactMidpointAnnotationView ()
 
-@property (strong, nonatomic) CAShapeLayer *searchRadiusCircle;
-@property (strong, nonatomic) CAShapeLayer *searchRadiusSliderCircle;
-@property (strong, nonatomic) CAShapeLayer *leaderLine;
+@property (strong, nonatomic) CALayer *searchRadiusCircleLayer;
+@property (strong, nonatomic) CAShapeLayer *circleLower;
+@property (strong, nonatomic) CAShapeLayer *circleUpper;
+
 @property (nonatomic, assign) BOOL visible;
 
 @end
@@ -48,105 +47,20 @@ NSString * const caCENContactMidpointAnnotationReuseID = @"CENContactMidpointAnn
         [self setFrame:frame];
         [self setOpaque:NO];
         [self setClipsToBounds:NO];
+        [self setUserInteractionEnabled:NO];
+        [self setDraggable:NO];
     }
     return self;
 }
 
 - (void)drawRect:(CGRect)rect
 {
-//    NSLogRect(rect, @"current MPAV frame");
-//    // Update Search Area Circle Or Draw If None
-//    if (self.searchRadiusCircle) {
-//        [self.searchRadiusCircle setPath:[self searchAreaCirclePathWithRect:rect]];
-//    }
-//    else {
-//        [self setSearchRadiusCircle:[self searchAreaCircleWithRect:rect]];
-//        [self.layer addSublayer:self.searchRadiusCircle];
-//    }
-//    
-//    // Update Search Radius Slider Handle Or Draw If None
-//    if (self.searchRadiusSliderCircle) {
-//        [self.searchRadiusSliderCircle setPath:[self radiusSliderButtonPath]];
-//    }
-//    else {
-//        [self setSearchRadiusSliderCircle:[self radiusSliderButton]];
-//        [self.layer addSublayer:self.searchRadiusSliderCircle];
-//    }
-//    
-//    // Update Search Area Circle Or Draw If None
-//    if (self.leaderLine) {
-//        [self.leaderLine setPath:[self leaderLinePath]];
-//    }
-//    else {
-//        [self setLeaderLine:[self leaderLineShape]];
-//        [self.layer addSublayer:self.leaderLine];
-//    }
-    [self.layer addSublayer:[self contentsLayerWithRect:rect]];
-}
-
--(CAShapeLayer *)searchAreaCircleWithRect:(CGRect)rect {
-    CAShapeLayer *circle = [CAShapeLayer layer];
-    circle.path = [self searchAreaCirclePathWithRect:rect];
-    [circle setFillColor:[[UIColor colorWithRed:0 green:0.1 blue:0.8 alpha:0.11] CGColor]];
-    [circle setStrokeColor:[[UIColor colorWithRed:0 green:0.1 blue:0.8 alpha:1.0] CGColor]];
-    [circle setLineWidth:2.0];
-    [circle setOpaque:NO];
-    return circle;
-}
-
--(CAShapeLayer *)radiusSliderButton {
-
-    CAShapeLayer *circle = [CAShapeLayer layer];
-    circle.path = [self radiusSliderButtonPath];
-    [circle setFillColor:[[UIColor colorWithRed:232.0/255 green:80.0/255 blue:80.0/255 alpha:0.5] CGColor]];
-    [circle setStrokeColor:[[UIColor colorWithRed:232.0/255 green:80.0/255 blue:80.0/255 alpha:1.0] CGColor]];
-    [circle setLineWidth:3.0];
-    [circle setOpaque:NO];
-    return circle;
-}
-
--(CAShapeLayer *)leaderLineShape {
-    
-    CAShapeLayer *line = [CAShapeLayer layer];
-    line.path = [self leaderLinePath];
-    [line setLineWidth:3.0];
-    line.strokeColor = [[UIColor colorWithRed:232.0/255
-                                        green:80.0/255
-                                         blue:80.0/255
-                                        alpha:1.0] CGColor];
-    [line setLineDashPattern:@[@5,@2]];
-    return line;
-}
-
--(CGMutablePathRef)leaderLinePath {
-    CGMutablePathRef linePath = CGPathCreateMutable();
-    NSLog(@"rectCenter: x: %f, y: %f",
-          CGRectGetMidX(self.searchRadiusSliderCircle.frame),
-          CGRectGetMidY(self.searchRadiusSliderCircle.frame));
-    CGPathMoveToPoint(linePath,
-                      NULL,
-                      CGRectGetMidX(self.frame),
-                      CGRectGetMidY(self.frame));
-    CGPathAddLineToPoint(linePath,
-                         NULL,
-                         CGRectGetMidX(CGPathGetBoundingBox(self.searchRadiusSliderCircle.path))-16,
-                         CGRectGetMidY(CGPathGetBoundingBox(self.searchRadiusSliderCircle.path))-16);
-    return linePath;
-}
-
--(CGPathRef)searchAreaCirclePathWithRect:(CGRect)rect {
-    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:rect];
-    return path.CGPath;
-}
-
--(CGPathRef)radiusSliderButtonPath {
-    CGFloat currentSize = 44;
-    CGFloat xOrigin = CGRectGetMaxX(self.frame)-15;
-    CGFloat yOrigin = CGRectGetMaxY(self.frame)-15;
-    CGRect newSBRect = CGRectMake(xOrigin, yOrigin, currentSize, currentSize);
-    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:newSBRect];
-    
-    return path.CGPath;
+    if (!self.searchRadiusCircleLayer) {
+        [self.layer addSublayer:[self contentsLayerWithRect:rect]];
+    }
+    else {
+        [self updateCirclePathsWithRect:rect];
+    }
 }
 
 #pragma mark - Animation Generators
@@ -189,7 +103,10 @@ NSString * const caCENContactMidpointAnnotationReuseID = @"CENContactMidpointAnn
     else if (visible && !wasVisible && !CGRectIsNull(newFrame)) {
         [self showWithAnimation:animated withNewFrame:newFrame];
     }
-    else if (!visible) {
+    else if (visible && wasVisible && !CGRectIsNull(newFrame)) {
+        [self showWithAnimation:animated withNewFrame:newFrame];
+    }
+    else if (!visible && wasVisible) {
         [self hideWithAnimation:animated];
     }
 }
@@ -206,7 +123,7 @@ NSString * const caCENContactMidpointAnnotationReuseID = @"CENContactMidpointAnn
 -(void)showWithAnimation:(BOOL)animated withNewFrame:(CGRect)newFrame {
     [self setFrame:newFrame];
     [self setHidden:NO];
-    
+    [self setNeedsDisplay];
     NSTimeInterval duration = animated ? TransitionDuration : 0;
     [UIView animateWithDuration:duration
                      animations:^{
@@ -214,9 +131,50 @@ NSString * const caCENContactMidpointAnnotationReuseID = @"CENContactMidpointAnn
                      }];
 }
 
+- (void)updateCirclePathsWithRect:(CGRect)rect {
+    CGPathRef newPath = [self searchAreaCirclePathForRect:rect];
+    [self.circleLower setPath:newPath];
+    [self.circleUpper setPath:newPath];
+}
 
+- (CGPathRef)searchAreaCirclePathForRect:(CGRect)rect {
+    rect = RectAroundCenter(RectGetCenter(rect), CGSizeMake(rect.size.width-5, rect.size.height-5));
+    rect = CGRectIntegral(rect);
+    
+    return [UIBezierPath bezierPathWithOvalInRect:rect].CGPath;
+}
 
 - (CALayer *)contentsLayerWithRect:(CGRect)rect {
+    CGPathRef circlePath = [self searchAreaCirclePathForRect:rect];
+    
+    CAShapeLayer *lowerCircle = [CAShapeLayer layer];
+    lowerCircle.path = circlePath;
+    [lowerCircle setFillColor:[UIColor clearColor].CGColor];
+    [lowerCircle setStrokeColor:[CENCommon blueBorderColor].CGColor];
+    [lowerCircle setLineWidth:5];
+    [lowerCircle setShadowColor:[UIColor blackColor].CGColor];
+    [lowerCircle setShadowOffset:CGSizeMake(1.1, 1.1)];
+    [lowerCircle setShadowRadius:2];
+    [lowerCircle setShadowOpacity:0.25];
+    
+    CAShapeLayer *upperCircle = [CAShapeLayer layer];
+    upperCircle.path = circlePath;
+    [upperCircle setFillColor:[UIColor clearColor].CGColor];
+    [upperCircle setStrokeColor:[CENCommon blueFillColor].CGColor];
+    [upperCircle setLineWidth:3];
+    
+    CALayer *combinedLayer = [CALayer layer];
+    [combinedLayer addSublayer:lowerCircle];
+    [combinedLayer addSublayer:upperCircle];
+    
+    [self setCircleLower:lowerCircle];
+    [self setCircleUpper:upperCircle];
+    [self setSearchRadiusCircleLayer:combinedLayer];
+    
+    return combinedLayer;
+}
+
+/*- (CALayer *)contentsLayerWithRect:(CGRect)rect {
     
     rect = RectAroundCenter(RectGetCenter(rect), CGSizeMake(rect.size.width-5, rect.size.height-5));
     
@@ -259,8 +217,7 @@ NSString * const caCENContactMidpointAnnotationReuseID = @"CENContactMidpointAnn
     [layer setContents:image];
     return layer;
     
-}
-
+}*/
 
 
 @end

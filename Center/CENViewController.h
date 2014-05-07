@@ -12,5 +12,10 @@
 @interface CENViewController : UIViewController
 
 - (CGRect)searchRegionCGRect;
+- (CGPoint)overlapCenterPoint;
+
+- (void)presentContactPicker;
+
+
 
 @end

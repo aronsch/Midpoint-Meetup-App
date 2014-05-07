@@ -17,7 +17,7 @@
 
 @property (nonatomic, assign) ABAddressBookRef addressBook;
 @property (nonatomic, strong) CENContactManager *contactManager;
-@property (weak, nonatomic) IBOutlet UITableView *contactTableView;
+@property (strong, nonatomic) IBOutlet UITableView *contactTableView;
 
 @end
 
@@ -63,6 +63,9 @@
     [self showPeoplePickerController];
 }
 
+-(void)presentContactPicker {
+    [self showPeoplePickerController];
+}
 
 #pragma mark Show ABPeoplePickerNavigationController
 -(void)showPeoplePickerController
@@ -92,7 +95,7 @@
                                 property:(ABPropertyID)property
                               identifier:(ABMultiValueIdentifier)identifier
 {
-    __weak CENContactViewController *weakSelf = self;
+    __block CENContactViewController *blockSelf = self;
     
     CENContactABInfo abInfo = CENContactABInfoMake(person, property, identifier);
     
@@ -100,10 +103,10 @@
                                         completionBlock:^(CENContactAddStatus status, CENContact *contact){
                                             switch (status) {
                                                 case kFailedContactExists:
-                                                    [weakSelf displayContactExistsAlertForContact:contact];
+                                                    [blockSelf displayContactExistsAlertForContact:contact];
                                                     break;
                                                 case kContactAddSuccess:
-                                                    [weakSelf contactAdded];
+                                                    [blockSelf contactAdded];
                                                     break;
                                                 default:
                                                     break;
@@ -167,14 +170,14 @@
 
 -(void)requestAddressBookAccess
 {
-    CENContactViewController * __weak weakSelf = self;
+    CENContactViewController * __block blockSelf = self;
     
     ABAddressBookRequestAccessWithCompletion(self.addressBook,
                                              ^(bool granted, CFErrorRef error) {
                                                  if (granted)
                                                  {
                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                         [weakSelf accessGrantedForAddressBook];
+                                                         [blockSelf accessGrantedForAddressBook];
                                                      });
                                                  }
                                              });
@@ -189,14 +192,14 @@
 #pragma mark - UITableViewDataSource Protocol
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.contactManager.contacts.count;
+    return (NSInteger)self.contactManager.contacts.count;
 }
 
 -(CENContactViewTableViewCell *)tableView:(UITableView *)tableView
                     cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CENContactViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cCENContactCellReuseID];
     
-    CENContact *contact = [self.contactManager contactAtIndex:indexPath.item];
+    CENContact *contact = [self.contactManager contactAtIndex:(NSUInteger)indexPath.item];
     [cell setName:[contact nameFirstLast]];
     [cell setAddress:[contact addressAsMultiLineString]];
     [cell setContactPhoto:[contact contactPhoto]];
@@ -214,7 +217,7 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-        CENContact *contact = [self.contactManager contactAtIndex:indexPath.item];
+        CENContact *contact = [self.contactManager contactAtIndex:(NSUInteger)indexPath.item];
         [self.contactManager removeContact:contact];
         
         [self.contactTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -250,4 +253,7 @@
          [self.contactTableView reloadData];
      }];
 }
+
+
+
 @end

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -16,22 +17,30 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ozw-Ku-rss" customClass="CENMapView">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" mapType="standard" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ozw-Ku-rss">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="yZn-Jx-xep"/>
                                 </connections>
                             </mapView>
-                            <containerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oil-Mc-kUt" userLabel="Search View Container">
-                                <rect key="frame" x="-252" y="41.5" width="252" height="485"/>
+                            <containerView hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oil-Mc-kUt" userLabel="Search View Container">
+                                <rect key="frame" x="-252" y="42" width="252" height="485"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <segue destination="kOe-7e-drZ" kind="embed" identifier="Search View Segue" id="rna-ow-tto"/>
                                 </connections>
                             </containerView>
-                            <containerView opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BXw-9d-oMG" userLabel="Contact View Container">
+                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ige-Mp-sSP" userLabel="Contact Info View">
+                                <rect key="frame" x="0.0" y="378" width="320" height="190"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <segue destination="Z9P-aG-CnA" kind="embed" identifier="travel info segue" id="56C-i6-HOw"/>
+                                </connections>
+                            </containerView>
+                            <containerView hidden="YES" clipsSubviews="YES" tag="1" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BXw-9d-oMG" userLabel="Contact View Container">
                                 <rect key="frame" x="320" y="41" width="252" height="486"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -39,15 +48,11 @@
                                     <segue destination="Mrn-FE-ndw" kind="embed" identifier="Contact View Segue" id="McW-On-Xzh"/>
                                 </connections>
                             </containerView>
-                            <containerView hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ige-Mp-sSP">
-                                <rect key="frame" x="0.0" y="20" width="320" height="183"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <connections>
-                                    <segue destination="Z9P-aG-CnA" kind="embed" id="56C-i6-HOw"/>
-                                </connections>
-                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Ozw-Ku-rss" firstAttribute="bottom" secondItem="Ige-Mp-sSP" secondAttribute="bottom" id="g33-Mi-nlo"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="Ozw-Ku-rss" id="SVv-ch-Ud5"/>
@@ -65,7 +70,7 @@
                         <viewControllerLayoutGuide type="top" id="B8q-jQ-nmb"/>
                         <viewControllerLayoutGuide type="bottom" id="fTE-B1-kzH"/>
                     </layoutGuides>
-                    <view key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="84X-37-PwY">
+                    <view key="view" hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="84X-37-PwY">
                         <rect key="frame" x="0.0" y="0.0" width="252" height="485"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -112,7 +117,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ttn-m3-Ngv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="673" y="382"/>
+            <point key="canvasLocation" x="673" y="431"/>
         </scene>
         <!--Contact View Controller - Contact View-->
         <scene sceneID="mXr-Kf-lib">
@@ -138,9 +143,10 @@
                                             <rect key="frame" x="0.0" y="0.0" width="252" height="65"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aVn-zh-FR5">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aVn-zh-FR5" customClass="CENContactTravelInfoPhotoView">
                                                     <rect key="frame" x="0.0" y="0.0" width="65" height="65"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </imageView>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Contact Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sqx-Tt-epC">
                                                     <rect key="frame" x="73" y="4" width="159" height="21"/>
@@ -197,21 +203,94 @@
         <!--Travel Info View Controller - Travel Info View Controller-->
         <scene sceneID="teQ-Vu-XMX">
             <objects>
-                <viewController storyboardIdentifier="Travel Info" title="Travel Info View Controller" automaticallyAdjustsScrollViewInsets="NO" id="Z9P-aG-CnA" customClass="CENTravelInfoViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Travel Info" title="Travel Info View Controller" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Z9P-aG-CnA" customClass="CENTravelInfoViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="19p-oD-mL8"/>
                         <viewControllerLayoutGuide type="bottom" id="iJa-eC-XxI"/>
                     </layoutGuides>
                     <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="KBR-AH-9TJ">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="183"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="190"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ACX-G4-UKW">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="190"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <inset key="scrollIndicatorInsets" minX="5" minY="0.0" maxX="5" maxY="2"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="5" minimumInteritemSpacing="5" id="3a9-ic-S4l">
+                                    <size key="itemSize" width="100" height="88"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="6" minY="0.0" maxX="0.0" maxY="6"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" horizontalCompressionResistancePriority="1" verticalCompressionResistancePriority="1" reuseIdentifier="CENContactInfoCVCellReuseID" id="49e-Z9-4Cz" customClass="CENContactInfoCVCell">
+                                        <rect key="frame" x="6" y="0.0" width="100" height="88"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="88"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1" verticalCompressionResistancePriority="1" translatesAutoresizingMaskIntoConstraints="NO" id="fse-VK-nDt" customClass="CENContactTravelInfoPhotoView">
+                                                    <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="fse-VK-nDt" secondAttribute="height" multiplier="1:1" id="Fea-3e-eIT"/>
+                                                    </constraints>
+                                                </view>
+                                                <view opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="vLE-R6-wfe" customClass="CENContactTravelInfoBadgeView">
+                                                    <rect key="frame" x="56" y="44" width="44" height="44"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="44" id="R2D-sL-f81"/>
+                                                        <constraint firstAttribute="height" constant="44" id="heY-zN-hgw"/>
+                                                    </constraints>
+                                                </view>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="fse-VK-nDt" firstAttribute="top" secondItem="49e-Z9-4Cz" secondAttribute="top" id="0E2-yL-eqZ"/>
+                                            <constraint firstAttribute="trailing" secondItem="vLE-R6-wfe" secondAttribute="trailing" id="LUt-6H-bnK"/>
+                                            <constraint firstItem="fse-VK-nDt" firstAttribute="leading" secondItem="49e-Z9-4Cz" secondAttribute="leading" id="bEo-Lq-0ag"/>
+                                            <constraint firstAttribute="trailing" secondItem="fse-VK-nDt" secondAttribute="trailing" constant="20" id="ea6-RC-WB2"/>
+                                            <constraint firstAttribute="bottom" secondItem="vLE-R6-wfe" secondAttribute="bottom" id="ye4-NL-553"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="contactBadgeView" destination="vLE-R6-wfe" id="hqj-D9-85X"/>
+                                            <outlet property="contactPhotoView" destination="fse-VK-nDt" id="0cF-Co-A5Z"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CENAddContactCVCellReuseID" id="rwB-gM-IXd" customClass="CENAddContactCVCell">
+                                        <rect key="frame" x="20" y="93" width="72" height="88"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="72" height="88"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <size key="customSize" width="72" height="88"/>
+                                    </collectionViewCell>
+                                </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="Z9P-aG-CnA" id="ank-rc-cYI"/>
+                                    <outlet property="delegate" destination="Z9P-aG-CnA" id="lhu-IJ-QA2"/>
+                                </connections>
+                            </collectionView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <toolbarItems/>
+                    <connections>
+                        <outlet property="contactsCollectionView" destination="ACX-G4-UKW" id="0zX-l5-m80"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CBW-Qt-Lus" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="284" y="-210"/>
+            <point key="canvasLocation" x="136" y="732"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

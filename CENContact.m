@@ -112,9 +112,9 @@
 #pragma mark Address Book Information Bridging
 // When working with c dicts, StringWithFormat protects against returning nil objects.
 - (NSDictionary *)addressDictWithAddressRef:(ABMultiValueRef)addressRef andIdentifier:(int)identifier {
-    NSUInteger index = ABMultiValueGetIndexForIdentifier(addressRef, identifier);
+    NSInteger index = ABMultiValueGetIndexForIdentifier(addressRef, identifier);
     NSArray *addressMulti = (__bridge_transfer NSArray *)ABMultiValueCopyArrayOfAllValues(addressRef);
-    NSDictionary *dict = [addressMulti objectAtIndex:index];
+    NSDictionary *dict = [addressMulti objectAtIndex:(NSUInteger)index];
     
     NSString *address = [NSString stringWithFormat:@"%@", dict[(NSString *)kABPersonAddressStreetKey]];
     NSString *zipCode = [NSString stringWithFormat:@"%@", dict[(NSString *)kABPersonAddressZIPKey]];

@@ -11,7 +11,7 @@
 
 @interface CENContactMidpointOverlayRenderer ()
 
-@property (nonatomic, assign) MKMapSize searchRadius;
+@property (strong,nonatomic) NSArray *contactOverlapMapRects;
 
 @end
 
@@ -19,6 +19,10 @@
 
 +(instancetype)withOverlay:(id<MKOverlay>)overlay {
     return [[CENContactMidpointOverlayRenderer alloc] initWithOverlay:overlay];
+}
+
++(instancetype)withOverlay:(id<MKOverlay>)overlay andOverlapRects:(NSArray *)mapRects {
+    return [[CENContactMidpointOverlayRenderer alloc] initWithOverlay:overlay andOverlapRects:mapRects];
 }
 
 -(id)initWithOverlay:(id<MKOverlay>)overlay {
@@ -29,10 +33,38 @@
     return self;
 }
 
+-(id)initWithOverlay:(id<MKOverlay>)overlay andOverlapRects:(NSArray *)mapRects;{
+    self = [super initWithOverlay:overlay];
+    if (!self) {
+        return nil;
+    }
+    [self setContactOverlapMapRects:mapRects];
+    return self;
+}
+
+
 #pragma mark - Drawing
 
 -(void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
     
+    CGContextSetStrokeColorWithColor(context, [[CENCommon blueFillColor] colorWithAlphaComponent:0.75].CGColor);
+    CGContextSetFillColorWithColor(context, [[CENCommon blueFillColor] colorWithAlphaComponent:0.1].CGColor);
+    CGContextSetLineWidth(context, 1000);
+    
+    for (NSValue *value in self.contactOverlapMapRects) {
+        MKMapRect overlapMapRect = [CENCommon mapRectFromValue:value];
+        CGRect rect = [self rectForMapRect:overlapMapRect];
+        CGContextFillEllipseInRect(context, rect);
+        CGContextStrokeEllipseInRect(context, rect);
+    }
+    
+}
+
+# pragma mark - Setters
+
+-(void)setContactOverlapMapRects:(NSArray *)overlapRects {
+    _contactOverlapMapRects = overlapRects;
+    [self setNeedsDisplay];
 }
 
 @end

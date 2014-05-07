@@ -1,5 +1,5 @@
 //
-//  CENSearchAreaAnnotation.m
+//  CENSearchRadiusControlAnnotation.m
 //  Center
 //
 //  Created by Aron Schneider on 4/26/14.
@@ -11,6 +11,8 @@
 
 @implementation CENSearchRadiusControlAnnotation
 
+@synthesize coordinate = _coordinate;
+
 +(instancetype)annotationWithLocation:(CLLocation *)location {
     return [[CENSearchRadiusControlAnnotation alloc] initWithLocation:location];
 }
@@ -20,14 +22,23 @@
     if (!self) {
         return nil;
     }
+    [self setHasBeenMoved:NO];
     [self setCoordinate:location.coordinate];
     
     
     return self;
 }
 
--(void)setCoordinate:(CLLocationCoordinate2D)newCoordinate {
-    _coordinate = newCoordinate;
+-(id)initWithCoordinate:(CLLocationCoordinate2D)coord {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    [self setHasBeenMoved:NO];
+    [self setCoordinate:coord];
+    
+    
+    return self;
 }
 
 -(void)setLocation:(CLLocation *)location {
@@ -37,5 +48,10 @@
 -(CLLocation *)annotationLocation {
     return CLLocationMake(self.coordinate.latitude, self.coordinate.longitude);
 }
+
+-(void)setCoordinate:(CLLocationCoordinate2D)newCoordinate {
+    _coordinate = newCoordinate;
+}
+
 
 @end

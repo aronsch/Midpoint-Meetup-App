@@ -10,7 +10,7 @@
 
 @implementation CENCommon
 
-#pragma mark Application Notification Constants Declaration
+#pragma mark - Application Notification Constants Declaration
 
 #pragma mark -Search Notification Constancts
 NSString * const cnCENSearchResultsAdded = @"CENSearchResultsAdded";
@@ -60,10 +60,61 @@ NSString * const cnCENGeocodeRequestedNotification = @"CENGeocodeRequestedNotifi
                          NSStringFromClass(expectedClass)];
 }
 
-#pragma Standard Geometry Functions
+
+#pragma mark - Map Geometry Functions
+
+MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region)
+{
+    MKMapPoint a = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
+                                                                      region.center.latitude + region.span.latitudeDelta / 2,
+                                                                      region.center.longitude - region.span.longitudeDelta / 2));
+    MKMapPoint b = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
+                                                                      region.center.latitude - region.span.latitudeDelta / 2,
+                                                                      region.center.longitude + region.span.longitudeDelta / 2));
+    return MKMapRectMake(MIN(a.x,b.x), MIN(a.y,b.y), ABS(a.x-b.x), ABS(a.y-b.y));
+}
+
+#pragma mark - Standard Colors
+
++ (UIColor *)blueFillColor {
+    return [UIColor colorWithRed:0.114 green:0.705 blue:1 alpha:1];
+}
+
++ (UIColor *)blueFillColorLowAlpha {
+    return [UIColor colorWithRed:0.114 green:0.705 blue:1 alpha:0.1];
+}
+
++ (UIColor *)blueBorderColor {
+    return [UIColor colorWithRed:0 green:0.59 blue:0.886 alpha:1];
+}
+
++ (UIColor *)blueBorderColorLowAlpha {
+    return [UIColor colorWithRed:0 green:0.59 blue:0.886 alpha:0.85];
+}
+
++ (UIColor *)shadowColor {
+    return [UIColor colorWithRed:0 green:0 blue:0 alpha:0.25];
+}
+
+#pragma mark - NSValue Encoding
+
++ (NSValue *)valueWithMapRect:(MKMapRect)mapRect {
+    return [NSValue value:&mapRect withObjCType:@encode(MKMapRect)];
+}
+
++ (MKMapRect)mapRectFromValue:(NSValue *)mapRectValue {
+    MKMapRect mapRect;
+    [mapRectValue getValue:&mapRect];
+    return mapRect;
+}
+
+@end
+
+#pragma mark - Standard Geometry Functions
 
 CGPoint RectGetCenter( CGRect rect) {
     return CGPointMake( CGRectGetMidX( rect), CGRectGetMidY( rect));
+    
 }
 
 CGRect RectAroundCenter(CGPoint center, CGSize size) {
@@ -78,18 +129,35 @@ CGRect RectCenteredInRect( CGRect rect, CGRect mainRect) {
     return CGRectOffset( rect, dx, dy);
 }
 
-#pragma Map Geometry Functions
+CGSize sizeForSquareThatFitsRect(CGRect rect) {
+    CGFloat size = MIN(rect.size.height, rect.size.width);
+    return CGSizeMake(size, size);
+}
 
-MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region)
-{
-    MKMapPoint a = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
-                                                                      region.center.latitude + region.span.latitudeDelta / 2,
-                                                                      region.center.longitude - region.span.longitudeDelta / 2));
-    MKMapPoint b = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
-                                                                      region.center.latitude - region.span.latitudeDelta / 2,
-                                                                      region.center.longitude + region.span.longitudeDelta / 2));
-    return MKMapRectMake(MIN(a.x,b.x), MIN(a.y,b.y), ABS(a.x-b.x), ABS(a.y-b.y));
+CGFloat distanceBetweenPoints (CGPoint a, CGPoint b) {
+    return sqrt(pow(a.x - b.x,2) + pow(a.y - b.y, 2));
 }
 
 
-@end
+#pragma mark - Debug Logging
+
+void CENLogRect (CGRect rect, NSString *name) {
+    NSLog(@"%@ rect \r origin { x: %f, y: %f }, size { width: %f, height: %f }", name, rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+}
+
+void CENLogMapRect (MKMapRect mapRect, NSString *name) {
+    NSLog(@"%@ rect { origin.x: %f, origin.y: %f, width: %f, height: %f }", name, mapRect.origin.x, mapRect.origin.y, mapRect.size.width, mapRect.size.height);
+}
+
+void CENLogCoordinate (CLLocationCoordinate2D coordinate, NSString *name) {
+    NSLog(@"%@ coordinate { lat: %f, lng: %f }" , name, coordinate.latitude, coordinate.longitude);
+}
+
+void CENLogPoint (CGPoint point, NSString *name) {
+    NSLog(@"%@ CGPoint - { x: %f, y: %f",name,point.x,point.y);
+}
+
+
+
+
+

@@ -12,5 +12,7 @@
 @interface CENContactViewController : UIViewController
 
 - (void)setContactManager:(CENContactManager *)contactManager;
+- (void)presentContactPicker;
+
 
 @end

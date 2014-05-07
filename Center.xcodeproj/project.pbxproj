@@ -35,6 +35,10 @@
 		9C1335CB18F78EA400243849 /* CENContactViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C1335CA18F78EA400243849 /* CENContactViewTableViewCell.m */; };
 		9C1335CE18F8884E00243849 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C1335CC18F8884E00243849 /* AddressBook.framework */; };
 		9C1335CF18F8884E00243849 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C1335CD18F8884E00243849 /* AddressBookUI.framework */; };
+		9C18425F19154BE200FB83D7 /* CENContactInfoCVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C18425E19154BE200FB83D7 /* CENContactInfoCVCell.m */; };
+		9C18426319154E9300FB83D7 /* CENContactTravelInfoPhotoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C18426219154E9300FB83D7 /* CENContactTravelInfoPhotoView.m */; };
+		9C18426619154EAE00FB83D7 /* CENContactTravelInfoBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C18426519154EAE00FB83D7 /* CENContactTravelInfoBadgeView.m */; };
+		9C18426A19171F9500FB83D7 /* CENAddContactCVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C18426919171F9500FB83D7 /* CENAddContactCVCell.m */; };
 		9C67F3DC190B71FF00C80CD7 /* CENSearchRadiusControlAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C67F3DB190B71FF00C80CD7 /* CENSearchRadiusControlAnnotationView.m */; };
 		9C67F3DF190B720E00C80CD7 /* CENSearchRadiusControlAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C67F3DE190B720E00C80CD7 /* CENSearchRadiusControlAnnotation.m */; };
 		9C67F3E3190C5C7400C80CD7 /* CENContactMidpointOverlayRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C67F3E2190C5C7400C80CD7 /* CENContactMidpointOverlayRenderer.m */; };
@@ -109,6 +113,14 @@
 		9C1335CA18F78EA400243849 /* CENContactViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CENContactViewTableViewCell.m; sourceTree = "<group>"; };
 		9C1335CC18F8884E00243849 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		9C1335CD18F8884E00243849 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		9C18425D19154BE200FB83D7 /* CENContactInfoCVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CENContactInfoCVCell.h; path = ../CENContactInfoCVCell.h; sourceTree = "<group>"; };
+		9C18425E19154BE200FB83D7 /* CENContactInfoCVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CENContactInfoCVCell.m; path = ../CENContactInfoCVCell.m; sourceTree = "<group>"; };
+		9C18426119154E9300FB83D7 /* CENContactTravelInfoPhotoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CENContactTravelInfoPhotoView.h; sourceTree = "<group>"; };
+		9C18426219154E9300FB83D7 /* CENContactTravelInfoPhotoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CENContactTravelInfoPhotoView.m; sourceTree = "<group>"; };
+		9C18426419154EAE00FB83D7 /* CENContactTravelInfoBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CENContactTravelInfoBadgeView.h; sourceTree = "<group>"; };
+		9C18426519154EAE00FB83D7 /* CENContactTravelInfoBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CENContactTravelInfoBadgeView.m; sourceTree = "<group>"; };
+		9C18426819171F9500FB83D7 /* CENAddContactCVCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CENAddContactCVCell.h; path = ../CENAddContactCVCell.h; sourceTree = "<group>"; };
+		9C18426919171F9500FB83D7 /* CENAddContactCVCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CENAddContactCVCell.m; path = ../CENAddContactCVCell.m; sourceTree = "<group>"; };
 		9C67F3DA190B71FF00C80CD7 /* CENSearchRadiusControlAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CENSearchRadiusControlAnnotationView.h; sourceTree = "<group>"; };
 		9C67F3DB190B71FF00C80CD7 /* CENSearchRadiusControlAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CENSearchRadiusControlAnnotationView.m; sourceTree = "<group>"; };
 		9C67F3DD190B720E00C80CD7 /* CENSearchRadiusControlAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CENSearchRadiusControlAnnotation.h; sourceTree = "<group>"; };
@@ -280,8 +292,7 @@
 				9C13359A18F214BC00243849 /* CENSearchViewController.h */,
 				9C13359B18F214BC00243849 /* CENSearchViewController.m */,
 				9C1335A118F214E100243849 /* Contact View */,
-				9C1335BF18F7504900243849 /* CENTravelInfoViewController.h */,
-				9C1335C018F7504900243849 /* CENTravelInfoViewController.m */,
+				9C18426019154BFD00FB83D7 /* Contact Travel Info View */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -334,6 +345,39 @@
 				9C1335CA18F78EA400243849 /* CENContactViewTableViewCell.m */,
 			);
 			name = "Contact Cell";
+			sourceTree = "<group>";
+		};
+		9C18426019154BFD00FB83D7 /* Contact Travel Info View */ = {
+			isa = PBXGroup;
+			children = (
+				9C1335BF18F7504900243849 /* CENTravelInfoViewController.h */,
+				9C1335C018F7504900243849 /* CENTravelInfoViewController.m */,
+				9C18426B19171FA100FB83D7 /* Add Contact Cell */,
+				9C18426719154EB600FB83D7 /* Contact Info Cell */,
+			);
+			name = "Contact Travel Info View";
+			sourceTree = "<group>";
+		};
+		9C18426719154EB600FB83D7 /* Contact Info Cell */ = {
+			isa = PBXGroup;
+			children = (
+				9C18425D19154BE200FB83D7 /* CENContactInfoCVCell.h */,
+				9C18425E19154BE200FB83D7 /* CENContactInfoCVCell.m */,
+				9C18426119154E9300FB83D7 /* CENContactTravelInfoPhotoView.h */,
+				9C18426219154E9300FB83D7 /* CENContactTravelInfoPhotoView.m */,
+				9C18426419154EAE00FB83D7 /* CENContactTravelInfoBadgeView.h */,
+				9C18426519154EAE00FB83D7 /* CENContactTravelInfoBadgeView.m */,
+			);
+			name = "Contact Info Cell";
+			sourceTree = "<group>";
+		};
+		9C18426B19171FA100FB83D7 /* Add Contact Cell */ = {
+			isa = PBXGroup;
+			children = (
+				9C18426819171F9500FB83D7 /* CENAddContactCVCell.h */,
+				9C18426919171F9500FB83D7 /* CENAddContactCVCell.m */,
+			);
+			name = "Add Contact Cell";
 			sourceTree = "<group>";
 		};
 		9C67F3E0190C5BEA00C80CD7 /* Search Radius Control Annotation */ = {
@@ -526,14 +570,18 @@
 				9C6FF4C918FE2D4F0000393D /* CENSearchResult.m in Sources */,
 				9CE45F4E19037EEC000D2DC4 /* CENContactsMidpointAnnotation.m in Sources */,
 				9CD51C8F18FADE72006CCDB1 /* CENCommon.m in Sources */,
+				9C18426A19171F9500FB83D7 /* CENAddContactCVCell.m in Sources */,
 				9C13357618F2135E00243849 /* CENAppDelegate.m in Sources */,
 				9C1335B818F6376900243849 /* CENSearchManager.m in Sources */,
 				9CD5A837190F282C00C195F8 /* CENMapView.m in Sources */,
 				9C67F3DC190B71FF00C80CD7 /* CENSearchRadiusControlAnnotationView.m in Sources */,
 				9C1335CB18F78EA400243849 /* CENContactViewTableViewCell.m in Sources */,
+				9C18426319154E9300FB83D7 /* CENContactTravelInfoPhotoView.m in Sources */,
+				9C18425F19154BE200FB83D7 /* CENContactInfoCVCell.m in Sources */,
 				9C1335AE18F6372600243849 /* CENContactManager.m in Sources */,
 				9C13357C18F2135E00243849 /* CENViewController.m in Sources */,
 				9CE45F51190390FF000D2DC4 /* CENContactMidpointAnnotationView.m in Sources */,
+				9C18426619154EAE00FB83D7 /* CENContactTravelInfoBadgeView.m in Sources */,
 				9C67F3E6190C5C9D00C80CD7 /* CENContactMidpointOverlay.m in Sources */,
 				9C13359C18F214BC00243849 /* CENSearchViewController.m in Sources */,
 				9C6FF4BE18FE20BC0000393D /* CENContactAnnotation.m in Sources */,
@@ -601,6 +649,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -608,10 +658,17 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = NO;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = NO;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -623,8 +680,14 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
@@ -639,6 +702,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -646,17 +711,30 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = NO;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = NO;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;

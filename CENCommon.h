@@ -6,10 +6,8 @@
 //  Copyright (c) 2014 Aron Schneider. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-@class CLLocation;
-@class CLPlacemark;
-#import <MapKit/MapKit.h>
+@import Foundation;
+@import MapKit;
 
 @protocol CENGeoInformationProtocol <NSObject>
 // Protocol indicating that an object can produce a string describing
@@ -63,6 +61,19 @@ extern NSString * const cnCENGeocodeRequestedNotification;
 +(void)exceptionObjectDoesNotConformToCENGeoInformationProtocol:(id)object;
 +(void)exceptionClassExpected:(Class)expectedClass
       forNotification:(NSNotification *)notification;
+
+#pragma - Standard Colors
++ (UIColor *)blueFillColor;
++ (UIColor *)blueFillColorLowAlpha;
++ (UIColor *)blueBorderColor;
++ (UIColor *)blueBorderColorLowAlpha;
++ (UIColor *)shadowColor;
+
+#pragma mark - NSValue Encoding
+
++ (NSValue *)valueWithMapRect:(MKMapRect)mapRect;
++ (MKMapRect)mapRectFromValue:(NSValue *)mapRectValue;
+
 @end
 
 #pragma - Standard Geometry Functions
@@ -70,6 +81,8 @@ extern NSString * const cnCENGeocodeRequestedNotification;
 CGPoint RectGetCenter( CGRect rect);
 CGRect RectAroundCenter( CGPoint center, CGSize size);
 CGRect RectCenteredInRect( CGRect rect, CGRect mainRect);
+CGSize sizeForSquareThatFitsRect(CGRect rect);
+CGFloat distanceBetweenPoints (CGPoint a, CGPoint b);
 
 #pragma - Map Geometry Functions
 
@@ -88,8 +101,7 @@ MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region);
 
 #define CENDefaultsArrayForKey(key) (NSArray *)[[[NSUserDefaults standardUserDefaults] persistentDomainForName:@"AJS.Center"] objectForKey:(key)]
 
-#define CENPlaceTypesArray      CENDefaultsArrayForKey(@"Place Types List")
-
+#define CENPlaceTypesArray CENDefaultsArrayForKey(@"Place Types List")
 
 #pragma mark Position Calculation Macros
 
@@ -99,6 +111,7 @@ MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region);
 #pragma mark Location Macros
 
 #define CLLocationMake(lat,lng) [[CLLocation alloc] initWithLatitude:(lat) longitude:(lng)]
+
 #define CLLocationWithCLLocationCoordinate2D(coordinate) [[CLLocation alloc] initWithLatitude:(coordinate).latitude longitude:(coordinate).longitude]
 
 #define CLLocationCoordinate2DWithLocation(location) CLLocationCoordinate2DMake((location).coordinate.latitude, (location).coordinate.longitude)
@@ -107,6 +120,11 @@ MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region);
 #pragma mark - DEBUG
 
 #define NSLogRect(rect, loglabel) NSLog(@"%@ rect \r xOrig: %f \r yOrig: %f \r width: %f \r height: %f ", (loglabel), (rect).origin.x, (rect).origin.y, (rect).size.width, (rect).size.height);
+
+void CENLogRect (CGRect rect, NSString *name);
+void CENLogMapRect (MKMapRect mapRect, NSString *name);
+void CENLogCoordinate (CLLocationCoordinate2D coordinate, NSString *name);
+void CENLogPoint (CGPoint point, NSString *name);
 
 
 

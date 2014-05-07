@@ -10,9 +10,9 @@
 
 @interface CENContactViewTableViewCell ()
 
-@property (weak, nonatomic) IBOutlet UIImageView *contactPhotoView;
-@property (weak, nonatomic) IBOutlet UILabel *contactNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *contactAddressLabel;
+@property (strong, nonatomic) IBOutlet UIImageView *contactPhotoView;
+@property (strong, nonatomic) IBOutlet UILabel *contactNameLabel;
+@property (strong, nonatomic) IBOutlet UILabel *contactAddressLabel;
 
 
 @end
@@ -51,5 +51,19 @@ NSString * const cCENContactCellReuseID = @"contact cell";
 - (void)setContactPhoto:(UIImage *)photo {
     [self.contactPhotoView setImage:photo];
 }
+
+/*
+ - (UIImage *)croppedPhotoFor:(UIImage *)photo {
+ UIGraphicsBeginImageContext(photo.size);
+ CGRect drawRect = CGRectMake(0, 0, photo.size.width, photo.size.height);
+ UIBezierPath *clipPath = [UIBezierPath bezierPathWithRect:drawRect];
+ [clipPath addClip];
+ [photo drawInRect:drawRect];
+ UIImage *croppedPhoto = UIGraphicsGetImageFromCurrentImageContext();
+ UIGraphicsEndImageContext();
+ return croppedPhoto;
+ }
+ */
+
 
 @end
