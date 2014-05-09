@@ -97,6 +97,7 @@
         CENContact *contact = [self.contacts objectAtIndex:(NSUInteger)indexPath.item];
         
         [cell setContact:contact];
+        [cell setClipsToBounds:NO];
     }
     return cell;
 }
@@ -143,7 +144,7 @@
              [self setContacts:object];
          }
          else {
-             [CENCommon exceptionClassExpected:[NSArray class]
+             [CENCommon exceptionPayloadClassExpected:[NSArray class]
                                forNotification:notification];
          }
      }];

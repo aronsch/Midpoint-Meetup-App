@@ -33,7 +33,6 @@ extern NSString * const cnCENSearchZeroed;
 
 #pragma mark -Location Manager Notification Constants
 extern NSString * const cnCENUserLocationUpdatedNotification;
-extern NSString * const cnCENLocationAvailableNotification;
 extern NSString * const cnCENMidpointUpdated;
 extern NSString * const cnCENETAReturnedNotification;
 
@@ -54,20 +53,35 @@ extern NSString * const cnCENMapRegionDidChangeNotification;
 #pragma mark -Travel Info View Notifications
 extern NSString * const cnCENETARequestedNotification;
 
-#pragma mark -CENGeoInformationProtocol Notification
+#pragma mark -CENGeoInformationProtocol Notifications
 extern NSString * const cnCENGeocodeRequestedNotification;
+extern NSString * const cnCENLocationAvailableNotification;
+
+#pragma mark -Contact Object Notifications
+extern NSString * const cnCENContactUpdateRequestedNotification;
 
 #pragma mark - Standard Exceptions
 +(void)exceptionObjectDoesNotConformToCENGeoInformationProtocol:(id)object;
-+(void)exceptionClassExpected:(Class)expectedClass
++(void)exceptionPayloadClassExpected:(Class)expectedClass
       forNotification:(NSNotification *)notification;
 
 #pragma - Standard Colors
 + (UIColor *)blueFillColor;
 + (UIColor *)blueFillColorLowAlpha;
++ (UIColor *)orangeComplementFillColor;
++ (UIColor *)orangeComplementBorderColor;
 + (UIColor *)blueBorderColor;
 + (UIColor *)blueBorderColorLowAlpha;
 + (UIColor *)shadowColor;
++ (UIColor *)distantShadowColor;
+
+#pragma Shadows Parameters
++ (CGSize)lowShadowSize;
++ (CGFloat)lowShadowBlur;
++ (CGSize)midShadowSize;
++ (CGFloat)midShadowBlur;
++ (CGSize)highShadowSize;
++ (CGFloat)highShadowBlur;
 
 #pragma mark - NSValue Encoding
 

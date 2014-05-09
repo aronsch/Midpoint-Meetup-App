@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -17,14 +16,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" mapType="standard" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ozw-Ku-rss">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ozw-Ku-rss">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="yZn-Jx-xep"/>
                                 </connections>
                             </mapView>
-                            <containerView hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oil-Mc-kUt" userLabel="Search View Container">
+                            <containerView hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oil-Mc-kUt" userLabel="Search View Container">
                                 <rect key="frame" x="-252" y="42" width="252" height="485"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -32,7 +31,7 @@
                                     <segue destination="kOe-7e-drZ" kind="embed" identifier="Search View Segue" id="rna-ow-tto"/>
                                 </connections>
                             </containerView>
-                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ige-Mp-sSP" userLabel="Contact Info View">
+                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ige-Mp-sSP" userLabel="Contact Info View">
                                 <rect key="frame" x="0.0" y="378" width="320" height="190"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -40,7 +39,7 @@
                                     <segue destination="Z9P-aG-CnA" kind="embed" identifier="travel info segue" id="56C-i6-HOw"/>
                                 </connections>
                             </containerView>
-                            <containerView hidden="YES" clipsSubviews="YES" tag="1" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BXw-9d-oMG" userLabel="Contact View Container">
+                            <containerView hidden="YES" clipsSubviews="YES" tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BXw-9d-oMG" userLabel="Contact View Container">
                                 <rect key="frame" x="320" y="41" width="252" height="486"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -51,7 +50,22 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Ozw-Ku-rss" firstAttribute="bottom" secondItem="Ige-Mp-sSP" secondAttribute="bottom" id="g33-Mi-nlo"/>
+                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="bottom" secondItem="Ozw-Ku-rss" secondAttribute="bottom" id="0yv-kC-ThI"/>
+                            <constraint firstAttribute="trailing" secondItem="BXw-9d-oMG" secondAttribute="trailing" constant="-252" id="22i-Sc-naH"/>
+                            <constraint firstItem="BXw-9d-oMG" firstAttribute="leading" secondItem="Ige-Mp-sSP" secondAttribute="trailing" id="3H9-ML-TFt"/>
+                            <constraint firstItem="BXw-9d-oMG" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" constant="41" id="8Ax-hB-66S"/>
+                            <constraint firstItem="Oil-Mc-kUt" firstAttribute="bottom" secondItem="BXw-9d-oMG" secondAttribute="bottom" id="94g-lt-Amw"/>
+                            <constraint firstItem="Oil-Mc-kUt" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="-252" id="BV5-uW-oqO"/>
+                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="JNi-Rb-amf"/>
+                            <constraint firstItem="Ozw-Ku-rss" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="cFu-8F-7ms"/>
+                            <constraint firstAttribute="bottom" secondItem="Ozw-Ku-rss" secondAttribute="bottom" id="ckb-yc-Z7s"/>
+                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="trailing" secondItem="Ozw-Ku-rss" secondAttribute="trailing" id="dLI-Tv-t7E"/>
+                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="leading" secondItem="Ozw-Ku-rss" secondAttribute="leading" id="ffy-Sy-xDQ"/>
+                            <constraint firstItem="Ozw-Ku-rss" firstAttribute="centerY" secondItem="BXw-9d-oMG" secondAttribute="centerY" id="ghF-kT-GCS"/>
+                            <constraint firstAttribute="trailing" secondItem="Ige-Mp-sSP" secondAttribute="trailing" id="hIc-nf-eFH"/>
+                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="top" secondItem="NXe-CY-lOd" secondAttribute="bottom" constant="358" id="kmu-FP-L2p"/>
+                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="leading" secondItem="Oil-Mc-kUt" secondAttribute="trailing" id="m8t-cx-7Pb"/>
+                            <constraint firstItem="Ozw-Ku-rss" firstAttribute="centerY" secondItem="Oil-Mc-kUt" secondAttribute="centerY" id="uF8-da-GNe"/>
                         </constraints>
                     </view>
                     <connections>
@@ -70,7 +84,7 @@
                         <viewControllerLayoutGuide type="top" id="B8q-jQ-nmb"/>
                         <viewControllerLayoutGuide type="bottom" id="fTE-B1-kzH"/>
                     </layoutGuides>
-                    <view key="view" hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="84X-37-PwY">
+                    <view key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="84X-37-PwY">
                         <rect key="frame" x="0.0" y="0.0" width="252" height="485"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -78,6 +92,20 @@
                                 <rect key="frame" x="10" y="171" width="232" height="262"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Place Type Cell" id="mk8-96-NfA">
+                                        <rect key="frame" x="0.0" y="22" width="232" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mk8-96-NfA" id="l0W-9M-JNR">
+                                            <rect key="frame" x="0.0" y="0.0" width="232" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="kOe-7e-drZ" id="ELm-gZ-aMH"/>
+                                    <outlet property="delegate" destination="kOe-7e-drZ" id="8ac-qi-gfN"/>
+                                </connections>
                             </tableView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="gmp-4u-qCM">
                                 <rect key="frame" x="7" y="64" width="238" height="29"/>
@@ -87,12 +115,18 @@
                                     <segment title="$$"/>
                                     <segment title="$$$"/>
                                 </segments>
+                                <connections>
+                                    <action selector="priceRangeChanged:" destination="kOe-7e-drZ" eventType="valueChanged" id="LIl-8x-u8o"/>
+                                </connections>
                             </segmentedControl>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Keyword" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ii2-Hm-6Yo">
                                 <rect key="frame" x="7" y="10" width="238" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                <connections>
+                                    <action selector="userSearchKeywordEntered:" destination="kOe-7e-drZ" eventType="editingDidEnd" id="JY2-1Y-ClS"/>
+                                </connections>
                             </textField>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="0vE-e7-i4Z">
                                 <rect key="frame" x="7" y="120" width="238" height="29"/>
@@ -102,6 +136,9 @@
                                     <segment title="**"/>
                                     <segment title="***"/>
                                 </segments>
+                                <connections>
+                                    <action selector="overlapAllowanceChanged:" destination="kOe-7e-drZ" eventType="valueChanged" id="6x3-mQ-s9t"/>
+                                </connections>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SnT-zg-uvH">
                                 <rect key="frame" x="15" y="441" width="222" height="44"/>
@@ -218,54 +255,40 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <inset key="scrollIndicatorInsets" minX="5" minY="0.0" maxX="5" maxY="2"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="5" minimumInteritemSpacing="5" id="3a9-ic-S4l">
-                                    <size key="itemSize" width="100" height="88"/>
+                                    <size key="itemSize" width="96" height="88"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="6" minY="0.0" maxX="0.0" maxY="6"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" horizontalCompressionResistancePriority="1" verticalCompressionResistancePriority="1" reuseIdentifier="CENContactInfoCVCellReuseID" id="49e-Z9-4Cz" customClass="CENContactInfoCVCell">
-                                        <rect key="frame" x="6" y="0.0" width="100" height="88"/>
+                                        <rect key="frame" x="6" y="0.0" width="96" height="88"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="100" height="88"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="96" height="88"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1" verticalCompressionResistancePriority="1" translatesAutoresizingMaskIntoConstraints="NO" id="fse-VK-nDt" customClass="CENContactTravelInfoPhotoView">
-                                                    <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                                                <view opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1" verticalCompressionResistancePriority="1" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fse-VK-nDt" customClass="CENContactTravelInfoPhotoView">
+                                                    <rect key="frame" x="0.0" y="0.0" width="96" height="87"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" secondItem="fse-VK-nDt" secondAttribute="height" multiplier="1:1" id="Fea-3e-eIT"/>
-                                                    </constraints>
-                                                </view>
-                                                <view opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="vLE-R6-wfe" customClass="CENContactTravelInfoBadgeView">
-                                                    <rect key="frame" x="56" y="44" width="44" height="44"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="44" id="R2D-sL-f81"/>
-                                                        <constraint firstAttribute="height" constant="44" id="heY-zN-hgw"/>
-                                                    </constraints>
                                                 </view>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstItem="fse-VK-nDt" firstAttribute="top" secondItem="49e-Z9-4Cz" secondAttribute="top" id="0E2-yL-eqZ"/>
-                                            <constraint firstAttribute="trailing" secondItem="vLE-R6-wfe" secondAttribute="trailing" id="LUt-6H-bnK"/>
-                                            <constraint firstItem="fse-VK-nDt" firstAttribute="leading" secondItem="49e-Z9-4Cz" secondAttribute="leading" id="bEo-Lq-0ag"/>
-                                            <constraint firstAttribute="trailing" secondItem="fse-VK-nDt" secondAttribute="trailing" constant="20" id="ea6-RC-WB2"/>
-                                            <constraint firstAttribute="bottom" secondItem="vLE-R6-wfe" secondAttribute="bottom" id="ye4-NL-553"/>
+                                            <constraint firstItem="fse-VK-nDt" firstAttribute="top" secondItem="49e-Z9-4Cz" secondAttribute="top" id="DpE-b1-IDa"/>
+                                            <constraint firstAttribute="trailing" secondItem="fse-VK-nDt" secondAttribute="trailing" id="Kai-v2-ZUM"/>
+                                            <constraint firstItem="fse-VK-nDt" firstAttribute="leading" secondItem="49e-Z9-4Cz" secondAttribute="leading" id="OFp-Hu-cWQ"/>
+                                            <constraint firstAttribute="bottom" secondItem="fse-VK-nDt" secondAttribute="bottom" id="SXr-Rq-wvO"/>
                                         </constraints>
                                         <connections>
-                                            <outlet property="contactBadgeView" destination="vLE-R6-wfe" id="hqj-D9-85X"/>
                                             <outlet property="contactPhotoView" destination="fse-VK-nDt" id="0cF-Co-A5Z"/>
                                         </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CENAddContactCVCellReuseID" id="rwB-gM-IXd" customClass="CENAddContactCVCell">
-                                        <rect key="frame" x="20" y="93" width="72" height="88"/>
+                                        <rect key="frame" x="18" y="93" width="72" height="88"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="72" height="88"/>

@@ -11,7 +11,11 @@
 @interface CENContact ()
 
 @property (nonatomic, copy) NSNumber *contactID;
-//@property (readwrite, strong, nonatomic) CLLocation *location;
+@property (nonatomic) NSValue *contactABInfo;
+@property (nonatomic, copy, readwrite) NSString *firstName;
+@property (nonatomic, copy, readwrite) NSString *lastName;
+@property (nonatomic, readwrite) NSDictionary *addressDictionary;
+@property (nonatomic) NSData *photoData;
 
 @end
 
@@ -21,28 +25,75 @@
 #pragma mark - Init
 
 +(instancetype)contactWithCENContactABInfo:(CENContactABInfo)abInfo {
-    return [[CENContact alloc] initWithABRecordRef:abInfo.ABRecordRef
-                                andProperty:abInfo.property
-                                     andIdentifier:abInfo.identifier];
+    return [[CENContact alloc] initWithABInfo:abInfo];
 }
 
-- (id)initWithABRecordRef:(ABRecordRef)contact andProperty:(int)property andIdentifier:(int)identifier
+- (id)initWithABInfo:(CENContactABInfo)abInfo
 {
     self = [super init];
-    if (self) {
-        [self setupWith:contact property:property identifier:identifier];
+    if (!self) {
+        return nil;
     }
+    [self configureWith:abInfo];
     return self;
 }
 
-- (void)setupWith:(ABRecordRef)contact property:(int)property identifier:(int)identifier {
-    self.contact = @{@"firstName":[self stringWithABRecord:contact forProperty:kABPersonFirstNameProperty],
-                    @"lastName": [self stringWithABRecord:contact forProperty:kABPersonLastNameProperty],
-                    @"addressDict": [self addressDictWithAddressRef:ABRecordCopyValue(contact, property) andIdentifier:identifier],
-                    @"imageData": [self thumbnailForABContact:contact]};
+#pragma mark - NSCoding Protocol
+
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    self.contactID = [aDecoder decodeObjectForKey:@"contactID"];
+    self.firstName = [aDecoder decodeObjectForKey:@"firstName"];
+    self.lastName = [aDecoder decodeObjectForKey:@"lastName"];
+    self.addressDictionary = [aDecoder decodeObjectForKey:@"addressDictionary"];
+    self.location = [aDecoder decodeObjectForKey:@"location"];
+    self.contactABInfo = [aDecoder decodeObjectForKey:@"contactABInfo"];
     
-    self.contactID = [NSNumber numberWithInt:ABRecordGetRecordID(contact)];
-    [self emitGeocodingRequest];
+    [self emitContactUpdateRequest];
+    return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)encoder {
+    [encoder encodeObject:self.contactID forKey:@"contactID"];
+    [encoder encodeObject:self.firstName forKey:@"firstName"];
+    [encoder encodeObject:self.lastName forKey:@"lastName"];
+    [encoder encodeObject:self.addressDictionary forKey:@"addressDictionary"];
+    [encoder encodeObject:self.location forKey:@"location"];
+    [encoder encodeObject:self.contactABInfo forKey:@"contactABInfo"];
+}
+
+#pragma mark - Configuration with ABRecordRef
+
+- (void)updateWithInfo:(CENContactABInfo)abInfo {
+    [self configureWith:abInfo];
+}
+
+- (void)configureWith:(CENContactABInfo)abInfo {
+    if ([self abInfoHasNullValues:abInfo]) {
+        [self emitRemoveSelf];
+        return;
+    }
+    
+    self.firstName = [self stringWithABRecord:abInfo.ABRecordRef
+                                  forProperty:kABPersonFirstNameProperty];
+    self.lastName = [self stringWithABRecord:abInfo.ABRecordRef
+                                 forProperty:kABPersonLastNameProperty];
+    self.addressDictionary = [self addressDictWithAddressRef:ABRecordCopyValue(abInfo.ABRecordRef, abInfo.property)
+                                               andIdentifier:abInfo.identifier];
+    self.photoData = [self thumbnailForABContact:abInfo.ABRecordRef];
+    self.contactID = [NSNumber numberWithInt:ABRecordGetRecordID(abInfo.ABRecordRef)];
+    self.contactABInfo = [self valueWithABInfo:abInfo];
+    
+    if (!self.location) {
+        [self emitGeocodingRequest];
+    }
+}
+
+- (BOOL)abInfoHasNullValues:(CENContactABInfo)abInfo {
+    return (abInfo.ABRecordRef == NULL || isnumber(abInfo.property) || isnumber(abInfo.identifier));
 }
 
 - (NSData *)thumbnailForABContact:(ABRecordRef)contact {
@@ -61,42 +112,36 @@
 
 #pragma mark Contact Information
 
-- (NSString *)firstName {
-    return self.contact[@"firstName"];
-}
-
-- (NSString *)lastName {
-    return self.contact[@"lastName"];
-}
-
 - (NSString *)nameFirstLast {
     return [NSString stringWithFormat:@"%@ %@",
-            self.contact[@"firstName"], self.contact[@"lastName"]];
+            self.firstName, self.lastName];
 }
 
 - (NSString *)nameLastFirst {
     return [NSString stringWithFormat:@"%@, %@",
-            self.contact[@"lastName"], self.contact[@"firstName"]];
+            self.lastName, self.firstName];
 }
 
 - (NSString *)addressAsString {
-    NSDictionary *d = self.contact[@"addressDict"];
+    NSDictionary *d = self.addressDictionary;
     return [NSString stringWithFormat:@"%@, %@, %@ %@",
             d[@"address"], d[@"city"], d[@"state"], d[@"zipCode"]];
 }
 
 - (NSString *)addressAsMultiLineString {
-    NSDictionary *aD = [self addressDictionary];
+    NSDictionary *aD = self.addressDictionary;
     return [NSString stringWithFormat:@"%@\n%@, %@ %@",
             aD[@"address"], aD[@"city"], aD[@"state"], aD[@"zipCode"]];
 }
 
-- (NSDictionary *)addressDictionary {
-    return self.contact[@"addressDict"];
+- (UIImage *)contactPhoto {
+    return [self imageUIImageWithData:self.photoData];
 }
 
-- (UIImage *)contactPhoto {
-    return [self imageUIImageWithData:self.contact[@"imageData"]];
+- (CENContactABInfo)addressBookInfo {
+    CENContactABInfo abInfo;
+    [self.contactABInfo getValue:&abInfo];
+    return abInfo;
 }
 
 #pragma mark - CENGeoInformationProtocol
@@ -110,6 +155,10 @@
 #pragma mark - Utility
 
 #pragma mark Address Book Information Bridging
+
+- (NSValue *)valueWithABInfo:(CENContactABInfo)abInfo {
+    return [NSValue value:&abInfo withObjCType:@encode(CENContactABInfo)];
+}
 // When working with c dicts, StringWithFormat protects against returning nil objects.
 - (NSDictionary *)addressDictWithAddressRef:(ABMultiValueRef)addressRef andIdentifier:(int)identifier {
     NSInteger index = ABMultiValueGetIndexForIdentifier(addressRef, identifier);
@@ -149,8 +198,6 @@
 }
 
 
-
-
 #pragma mark - Notification Emission
 
 - (void)emitGeocodingRequest {
@@ -161,4 +208,17 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:cnCENLocationAvailableNotification object:self];
 }
 
+- (void)emitContactUpdateRequest {
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENContactUpdateRequestedNotification object:self];
+}
+
+- (void)emitRemoveSelf {
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENContactRemovedNotification object:self];
+}
+
 @end
+
+CENContactABInfo CENContactABInfoMake(ABRecordRef ABRecord, int property, int identifier) {
+    CENContactABInfo abInfo = {ABRecord,property,identifier};
+    return abInfo;
+}

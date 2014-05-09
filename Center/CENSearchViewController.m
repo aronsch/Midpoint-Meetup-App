@@ -7,8 +7,11 @@
 //
 
 #import "CENSearchViewController.h"
+#import "CENSearchManager.h"
 
-@interface CENSearchViewController ()
+@interface CENSearchViewController () <UITableViewDataSource, UITableViewDelegate>
+
+@property (nonatomic) CENSearchManager *searchController;
 
 @end
 
@@ -18,22 +21,55 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        [self configure];
     }
     return self;
+}
+
+-(void)configure {
+    self.searchController = [[CENSearchManager alloc] init];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma mark - Handle Interaction
+
+- (IBAction)userSearchKeywordEntered:(UITextField *)sender {
+    [sender resignFirstResponder];
+    [self.searchController setUserKeyword:sender.text];
 }
+
+- (IBAction)priceRangeChanged:(UISegmentedControl *)sender {
+    int selected = (int)sender.selectedSegmentIndex;
+    [self.searchController
+     setPriceOption:(COAPriceOption)selected];
+}
+
+- (IBAction)overlapAllowanceChanged:(UISegmentedControl *)sender {
+    int selected = (int)sender.selectedSegmentIndex;
+    [self.searchController setOverlapOption:(COAOverlapOption)selected];
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return (NSInteger)self.searchController.placeTypes.count;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Place Type Cell"];
+    cell.textLabel.text = self.searchController.placeTypes[(NSUInteger)indexPath.item];
+    return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    // TODO
+}
+
+
+
+
 
 /*
 #pragma mark - Navigation

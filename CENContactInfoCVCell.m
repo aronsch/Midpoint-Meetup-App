@@ -10,12 +10,12 @@
 #import "CENContact.h"
 #import "CENContactTravelInfoPhotoView.h"
 #import "CENContactTravelInfoBadgeView.h"
+#import "CENCommon.h"
 
 @interface CENContactInfoCVCell ()
 
 @property (weak, nonatomic) IBOutlet CENContactTravelInfoPhotoView *contactPhotoView;
 @property (weak, nonatomic) IBOutlet CENContactTravelInfoBadgeView *contactBadgeView;
-
 
 @end
 
@@ -27,7 +27,8 @@ NSString * const crCENContactInfoCVCellReuseID = @"CENContactInfoCVCellReuseID";
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setBackgroundColor:[UIColor clearColor]];
+        self.backgroundColor = [UIColor clearColor];
+        self.clipsToBounds = NO;
     }
     return self;
 }
@@ -36,7 +37,6 @@ NSString * const crCENContactInfoCVCellReuseID = @"CENContactInfoCVCellReuseID";
     _contact = contact;
     [self.contactPhotoView setImage:[contact contactPhoto]];
 }
-
 
 -(BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
     for (UIView *v in self.subviews) {

@@ -94,7 +94,7 @@
              [self.delegate removeContactAnnotationForContact:object];
          }
          else {
-             [CENCommon exceptionClassExpected:[CENContact class] forNotification:notification];
+             [CENCommon exceptionPayloadClassExpected:[CENContact class] forNotification:notification];
          }
      }];
 }

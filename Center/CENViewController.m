@@ -271,7 +271,7 @@ typedef enum {
                                               initWithCoordinate:self.midPointAnnotation.coordinate
                                               andBoundingMapRect:[self mapRectBoundingAllOverlapRegions]];
 
-        [self.mapView addOverlay:overlay level:MKOverlayLevelAboveRoads];
+        [self.mapView addOverlay:overlay level:MKOverlayLevelAboveLabels];
     }
 }
 
@@ -394,6 +394,7 @@ didChangeDragState:(MKAnnotationViewDragState)newState
     }
     else if (newState == MKAnnotationViewDragStateStarting) {
         [controlAnnotation setHasBeenMoved:YES];
+        [self.mapView bringSubviewToFront:controlView];
         [controlView startDragAnimation];
         self.searchRadiusControlDragState = MKAnnotationViewDragStateDragging;
     }

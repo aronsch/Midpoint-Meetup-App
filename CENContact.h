@@ -17,15 +17,19 @@ typedef struct {
     int identifier;
 } CENContactABInfo;
 
-@interface CENContact : NSObject <CENGeoInformationProtocol>
+@interface CENContact : NSObject <CENGeoInformationProtocol, NSCoding>
 
-@property (strong, nonatomic) NSDictionary *contact;
+@property (nonatomic, readonly, copy) NSNumber *contactID;
 
-#pragma mark - Factory Methods
+@property (nonatomic, copy, readonly) NSString *firstName;
+@property (nonatomic, copy, readonly) NSString *lastName;
+@property (nonatomic, readonly) NSDictionary *addressDictionary;
+
+#pragma mark - Factory
 + (instancetype)contactWithCENContactABInfo:(CENContactABInfo)abInfo;
 
-#pragma Mark - Init Methods
-- (id)initWithABRecordRef:(ABRecordRef)contact andProperty:(int)property andIdentifier:(int)identifier;
+#pragma mark - Update After Decoding
+- (void)updateWithInfo:(CENContactABInfo)abInfo;
 
 #pragma Mark - Contact Information
 - (NSString *)firstName;
@@ -36,17 +40,17 @@ typedef struct {
 - (NSString *)addressAsMultiLineString;
 - (NSDictionary *)addressDictionary;
 - (UIImage *)contactPhoto;
+- (CENContactABInfo)addressBookInfo;
 
 #pragma Mark - Contact Comparison
 - (Boolean)isEqualToABContact:(ABRecordRef)contact;
 
 #pragma mark - CENGeoInformationProtocol
-@property (readwrite, strong, nonatomic) CLLocation *location;
+@property (readwrite, nonatomic) CLLocation *location;
 - (void)setLocation:(CLLocation *)location;
 
 
-#pragma mark - CENContactABInfo Struct Macro
-
-#define CENContactABInfoMake(ABRecordRef,property,identifier) {ABRecordRef,property,identifier}
-
 @end
+
+#pragma mark - CENContactABInfo Struct Make
+CENContactABInfo CENContactABInfoMake(ABRecordRef ABRecordRef, int property, int identifier);

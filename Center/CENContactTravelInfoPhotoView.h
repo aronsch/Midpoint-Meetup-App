@@ -11,5 +11,6 @@
 @interface CENContactTravelInfoPhotoView : UIView
 
 - (void)setImage:(UIImage *)image;
+- (void)updateWithRect:(CGRect)rect;
 
 @end

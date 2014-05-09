@@ -36,9 +36,9 @@ NSString * const crCENAddContactCVCellReuseID = @"CENAddContactCVCellReuseID";
     CGContextSaveGState(context);
     {
         CGContextSetShadowWithColor(context,
-                                    CGSizeMake(0, 9),
+                                    CGSizeMake(0, 10),
                                     3.0f,
-                                    [[UIColor blackColor] colorWithAlphaComponent:0.1].CGColor);
+                                    [[UIColor blackColor] colorWithAlphaComponent:0.15].CGColor);
         CGContextSetFillColorWithColor(context, [CENCommon blueFillColor].CGColor);
         CGContextFillEllipseInRect(context, rect);
         

@@ -224,15 +224,26 @@ NSString * const caCENSearchAreaHandleAnnotationReuseID = @"CENSearchAreaHandleA
     CGFloat overShoot = 0.15;
     overShoot = self.currentScale - scale <= 0 ? overShoot : -overShoot;
     
-    CAKeyframeAnimation *kfa = [CAKeyframeAnimation animation];
-    kfa.values = @[[NSValue valueWithCATransform3D:CATransform3DMakeScale(self.currentScale-overShoot,
+    CAKeyframeAnimation *kfaScale = [CAKeyframeAnimation animation];
+    kfaScale.values = @[[NSValue valueWithCATransform3D:CATransform3DMakeScale(self.currentScale-overShoot,
                                                                           self.currentScale-overShoot, 1)],
                      [NSValue valueWithCATransform3D:CATransform3DMakeScale(scale+overShoot, scale+overShoot, 1)],
                      [NSValue valueWithCATransform3D:CATransform3DMakeScale(scale, scale, 1)]];
-    kfa.fillMode = kCAFillModeForwards;
-    kfa.duration = 0.2f;
-    kfa.removedOnCompletion = NO;
-    [self.searchRadiusSliderCircle addAnimation:kfa forKey:@"transform"];
+    kfaScale.fillMode = kCAFillModeForwards;
+    kfaScale.duration = 0.2f;
+    kfaScale.removedOnCompletion = NO;
+    
+    
+    CAKeyframeAnimation *kfaShadow = [CAKeyframeAnimation animation];
+    kfaShadow.values = @[[NSValue valueWithCGSize:[CENCommon lowShadowSize]],
+                         [NSValue valueWithCGSize:[CENCommon highShadowSize]]];
+    kfaShadow.fillMode = kCAFillModeForwards;
+    kfaShadow.duration = 0.2f;
+    kfaShadow.removedOnCompletion = NO;
+    
+    CAAnimationGroup *aGroup = [[CAAnimationGroup alloc] init];
+    [aGroup setAnimations:@[kfaScale, kfaShadow]];
+    [self.searchRadiusSliderCircle addAnimation:kfaScale forKey:@"transform"];
     
     self.currentScale = scale;
 }

@@ -116,7 +116,7 @@
 }
 
 - (void)displayContactExistsAlertForContact:(CENContact *)contact {
-    NSString *firstName = [contact firstName];
+    NSString *firstName = contact.firstName;
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Already Added"
                                                     message:[NSString
                                                              stringWithFormat:@"Looks like %@ has already been added!",
@@ -251,6 +251,24 @@
                     usingBlock:^(NSNotification *notification)
      {
          [self.contactTableView reloadData];
+     }];
+}
+
+- (void)subscribeToContactUpdateRequestedNotification {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:cnCENContactUpdateRequestedNotification
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification)
+     {
+         id object = notification.object;
+         if ([object isKindOfClass:[CENContact class]]) {
+             CENContact *contact = (CENContact *)object;
+             ABRecordRef record = ABAddressBookGetPersonWithRecordID(self.addressBook, [contact.contactID intValue]);
+             [contact updateWithInfo:CENContactABInfoMake(record,
+                                                          [contact addressBookInfo].property,
+                                                          [contact addressBookInfo].identifier)];
+         }
      }];
 }
 

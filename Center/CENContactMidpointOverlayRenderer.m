@@ -47,9 +47,10 @@
 
 -(void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
     
-    CGContextSetStrokeColorWithColor(context, [[CENCommon blueFillColor] colorWithAlphaComponent:0.75].CGColor);
-    CGContextSetFillColorWithColor(context, [[CENCommon blueFillColor] colorWithAlphaComponent:0.1].CGColor);
-    CGContextSetLineWidth(context, 1000);
+    CGContextSetStrokeColorWithColor(context, [[CENCommon orangeComplementFillColor] colorWithAlphaComponent:0.75].CGColor);
+    CGContextSetFillColorWithColor(context, [[CENCommon orangeComplementFillColor] colorWithAlphaComponent:0.01].CGColor);
+    NSLog(@"zoomScale %f",zoomScale);
+    CGContextSetLineWidth(context, 2/zoomScale);
     
     for (NSValue *value in self.contactOverlapMapRects) {
         MKMapRect overlapMapRect = [CENCommon mapRectFromValue:value];

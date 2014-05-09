@@ -18,7 +18,6 @@ NSString * const cnCENSearchZeroed = @"CENSearchZeroed";
 
 #pragma mark -Location Manager Notification Constants
 NSString * const cnCENUserLocationUpdatedNotification = @"CENUserLocationUpdated";
-NSString * const cnCENLocationAvailableNotification = @"CENGeocodeCompleted";
 NSString * const cnCENMidpointUpdated = @"CENMidpointUpdated";
 NSString * const cnCENETAReturnedNotification = @"CENETAReturnedNotification";
 
@@ -39,9 +38,12 @@ NSString * const cnCENMapRegionDidChangeNotification = @"CENMapRegionDidChangeNo
 #pragma mark -Travel Info View Notifications
 NSString * const cnCENETARequestedNotification = @"CENETARequestedNotification";
 
-#pragma mark -Contact Object Notification
+#pragma mark -CENGeoInformationProtocol Notifications
 NSString * const cnCENGeocodeRequestedNotification = @"CENGeocodeRequestedNotification";
+NSString * const cnCENLocationAvailableNotification = @"CENGeocodeCompleted";
 
+#pragma mark -Contact Object Notifications
+NSString * const cnCENContactUpdateRequestedNotification = @"CENContactUpdateRequestedNotification";
 
 #pragma mark - Standard Exceptions
 
@@ -50,34 +52,31 @@ NSString * const cnCENGeocodeRequestedNotification = @"CENGeocodeRequestedNotifi
                 format:@"Listener for %@ expected object conforming to CENGeoInformation protocol with notification. Recieved %@ instead.", cnCENLocationAvailableNotification, NSStringFromClass([object class])];
 }
 
-+(void)exceptionClassExpected:(Class)expectedClass
++(void)exceptionPayloadClassExpected:(Class)expectedClass
               forNotification:(NSNotification *)notification {
     NSString *raiseMessage = [NSString stringWithFormat:@"Listener Expected %@ Object",NSStringFromClass(expectedClass)];
     [NSException raise:raiseMessage
-                format:@"Listener for %@ expected %@ object as part of notification; recieved %@ instead.",
+                format:@"Listener for %@ expected %@ object as payload; recieved %@ instead.",
                          notification.name,
                          NSStringFromClass([notification.object class]),
                          NSStringFromClass(expectedClass)];
 }
 
 
-#pragma mark - Map Geometry Functions
-
-MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region)
-{
-    MKMapPoint a = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
-                                                                      region.center.latitude + region.span.latitudeDelta / 2,
-                                                                      region.center.longitude - region.span.longitudeDelta / 2));
-    MKMapPoint b = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
-                                                                      region.center.latitude - region.span.latitudeDelta / 2,
-                                                                      region.center.longitude + region.span.longitudeDelta / 2));
-    return MKMapRectMake(MIN(a.x,b.x), MIN(a.y,b.y), ABS(a.x-b.x), ABS(a.y-b.y));
-}
 
 #pragma mark - Standard Colors
 
 + (UIColor *)blueFillColor {
+    // 30,180,255
     return [UIColor colorWithRed:0.114 green:0.705 blue:1 alpha:1];
+}
+
++ (UIColor *)orangeComplementFillColor {
+    return [UIColor colorWithRed:255/255.0 green:145/255.0 blue:18/255.0 alpha:1.0];
+}
+
++ (UIColor *)orangeComplementBorderColor {
+    return [UIColor colorWithRed:239/255.0 green:128/255.0 blue:0/255.0 alpha:1.0];
 }
 
 + (UIColor *)blueFillColorLowAlpha {
@@ -93,7 +92,37 @@ MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region)
 }
 
 + (UIColor *)shadowColor {
-    return [UIColor colorWithRed:0 green:0 blue:0 alpha:0.25];
+    return [[UIColor blackColor] colorWithAlphaComponent:0.25];
+}
+
++(UIColor *)distantShadowColor {
+    return [[UIColor blackColor] colorWithAlphaComponent:0.15];
+}
+
+#pragma Shadows Parameters
+
++ (CGSize)lowShadowSize {
+    return CGSizeMake(0, 2);
+}
+
++ (CGFloat)lowShadowBlur {
+    return 2.0f;
+}
+
++ (CGSize)midShadowSize {
+    return CGSizeMake(0, 5);
+}
+
++ (CGFloat)midShadowBlur {
+    return 4.0f;
+}
+
++ (CGSize)highShadowSize {
+    return CGSizeMake(0, 9);
+}
+
++ (CGFloat)highShadowBlur {
+    return 10.0f;
 }
 
 #pragma mark - NSValue Encoding
@@ -138,6 +167,18 @@ CGFloat distanceBetweenPoints (CGPoint a, CGPoint b) {
     return sqrt(pow(a.x - b.x,2) + pow(a.y - b.y, 2));
 }
 
+#pragma mark - Map Geometry Functions
+
+MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region)
+{
+    MKMapPoint a = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
+                                                                      region.center.latitude + region.span.latitudeDelta / 2,
+                                                                      region.center.longitude - region.span.longitudeDelta / 2));
+    MKMapPoint b = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
+                                                                      region.center.latitude - region.span.latitudeDelta / 2,
+                                                                      region.center.longitude + region.span.longitudeDelta / 2));
+    return MKMapRectMake(MIN(a.x,b.x), MIN(a.y,b.y), ABS(a.x-b.x), ABS(a.y-b.y));
+}
 
 #pragma mark - Debug Logging
 
