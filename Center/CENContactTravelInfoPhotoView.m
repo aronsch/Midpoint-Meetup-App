@@ -17,6 +17,7 @@
 @property (nonatomic) CALayer *photoLayer;
 @property (nonatomic) CAShapeLayer *strokeLayer;
 @property (nonatomic) CAShapeLayer *badgeLayer;
+@property (nonatomic) CATextLayer *etaTextLayer;
 @property (nonatomic) CGRect frame;
 
 @end
@@ -49,17 +50,17 @@
 - (void)updateWithRect:(CGRect)rect {
     // Ccreate or update circle background
     if (!self.strokeLayer) {
-        CAShapeLayer *baseLayer = [CAShapeLayer layer];
-        baseLayer.name = @"Base Background Shape";
-        baseLayer.path = [self backgroundLayerPath].CGPath;
-        baseLayer.fillColor = [CENCommon blueFillColor].CGColor;
-        baseLayer.shadowColor = [UIColor blackColor].CGColor;
-        baseLayer.shadowOpacity = 0.15f;
-        baseLayer.shadowPath = baseLayer.path;
-        baseLayer.shadowOffset = [CENCommon highShadowSize];
-        baseLayer.shadowRadius = 1.0f;
-        self.strokeLayer = baseLayer;
-        [self.layer addSublayer:baseLayer];
+        self.strokeLayer = [CAShapeLayer layer];
+        self.strokeLayer.name = @"Base Background Shape";
+        self.strokeLayer.path = [self backgroundLayerPath].CGPath;
+        self.strokeLayer.fillColor = [CENCommon blueFillColor].CGColor;
+        self.strokeLayer.shadowColor = [UIColor blackColor].CGColor;
+        self.strokeLayer.shadowOpacity = 0.15f;
+        self.strokeLayer.shadowPath = self.strokeLayer.path;
+        self.strokeLayer.shadowOffset = [CENCommon highShadowSize];
+        self.strokeLayer.shadowRadius = 1.0f;
+
+        [self.layer addSublayer:self.strokeLayer];
     }
     else {
         self.strokeLayer.path = [self backgroundLayerPath].CGPath;
@@ -67,34 +68,46 @@
     
     // create or update photo masked to circle
     if (!self.photoLayer && self.image) {
-        CAShapeLayer *maskLayer = [CAShapeLayer layer];
-        maskLayer.name = @"Contact Photo Mask";
-        maskLayer.path = [self photoMaskPath].CGPath;
-        maskLayer.fillColor = [UIColor whiteColor].CGColor;
-        self.maskLayer = maskLayer;
+        self.maskLayer = [CAShapeLayer layer];
+        self.maskLayer.name = @"Contact Photo Mask";
+        self.maskLayer.path = [self photoMaskPath].CGPath;
+        self.maskLayer.fillColor = [UIColor whiteColor].CGColor;
         
-        CALayer *photoLayer = [self makePhotoLayer];
-        [photoLayer setMask:maskLayer];
-        self.photoLayer = photoLayer;
-        [self.layer addSublayer:photoLayer];
+        self.photoLayer = [self makePhotoLayer];
+        [self.photoLayer setMask:self.maskLayer];
+        [self.layer addSublayer:self.photoLayer];
     }
     else {
         self.photoLayer.frame = [self bigCircleRect];
         self.maskLayer.path = [self photoMaskPath].CGPath;
     }
     
-    //create badge layer
+    //create or update badge text layer
     if (!self.badgeLayer) {
-        CAShapeLayer *badgeLayer = [CAShapeLayer layer];
-        badgeLayer.name = @"Information Badge";
-        badgeLayer.path = [self badgeCirclePath].CGPath;
-        badgeLayer.fillColor = [CENCommon blueFillColor].CGColor;
-        badgeLayer.zPosition = 1;
-        self.badgeLayer = badgeLayer;
-        [self.layer addSublayer:badgeLayer];
+        self.badgeLayer = [CAShapeLayer layer];
+        self.badgeLayer.name = @"Information Badge";
+        self.badgeLayer.path = [self badgeCirclePath].CGPath;
+        self.badgeLayer.fillColor = [CENCommon blueFillColor].CGColor;
+        self.badgeLayer.zPosition = 1;
+        [self.layer addSublayer:self.badgeLayer];
     }
     else {
         self.badgeLayer.path = [self badgeCirclePath].CGPath;
+    }
+    
+    //create badge text layer
+    if (!self.etaTextLayer) {
+        self.etaTextLayer = [CATextLayer layer];
+        self.etaTextLayer.frame = CGRectOffset(self.badgeLayer.bounds, 10, 0);
+        self.etaTextLayer.string = @"";
+        self.etaTextLayer.fontSize = 14.0;
+        self.etaTextLayer.alignmentMode = kCAAlignmentCenter;
+        self.etaTextLayer.wrapped = YES;
+        self.etaTextLayer.foregroundColor = [UIColor whiteColor].CGColor;
+        [self.badgeLayer addSublayer:self.etaTextLayer];
+    }
+    else {
+        self.etaTextLayer.frame = [self badgeRect];
     }
 }
 
@@ -126,11 +139,13 @@
 }
 
 -(UIBezierPath *)badgeCirclePath {
-    CGPoint origin = CGPointMake(CGRectGetMaxX(self.frame)-44, CGRectGetMaxY(self.frame)-44);
-    CGRect rect = CGRectMake(origin.x, origin.y, 44, 44);
-    return [UIBezierPath bezierPathWithOvalInRect:rect];
+    return [UIBezierPath bezierPathWithOvalInRect:[self badgeRect]];
 }
 
+- (CGRect)badgeRect {
+    CGPoint origin = CGPointMake(CGRectGetMaxX(self.frame)-44, CGRectGetMaxY(self.frame)-44);
+    return CGRectMake(origin.x, origin.y, 44, 44);
+}
 
 -(void)setImage:(UIImage *)image {
     _image = image;

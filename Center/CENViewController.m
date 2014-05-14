@@ -24,6 +24,8 @@
 #import "CENMapView.h"
 #import "CENContactMidpointOverlayRenderer.h"
 #import "CENContactMidpointOverlay.h"
+#import "CENSearchResult.h"
+
 
 @interface CENViewController () <MKMapViewDelegate,CENMapControllerProtocol>
 
@@ -44,7 +46,7 @@
 
 // Annotations
 @property (strong, nonatomic) NSMutableArray *contactAnnotations;
-@property (strong, nonatomic) NSMutableArray *searchResultAnnotations;
+@property (strong, nonatomic) NSMutableSet *searchResultAnnotations;
 @property (strong, nonatomic) CENContactsMidpointAnnotation *midPointAnnotation;
 @property (strong, nonatomic) CENSearchRadiusControlAnnotation *midPointSearchAreaHandleAnnotation;
 
@@ -263,6 +265,7 @@ typedef enum {
     [self removeOverlapCircles];
     [self midpointOverlap];
     [self updateMidpointAnnotations];
+    [self emitSearchRegionDidChangeNotification];
 }
 
 - (void)midpointOverlap {
@@ -317,6 +320,15 @@ typedef enum {
 
 #pragma mark - MKMapviewDelegate Protocol
 
+#pragma mark Annotation Selection (MKMapviewDelegate Protocol)
+
+-(void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    if ([[view reuseIdentifier] isEqualToString:@"CENSearchResultAnnotation"]) {
+        CENSearchResult *result = [(CENSearchResultAnnotation *)view.annotation searchResult];
+        [self emitETANeededNotificationForResult:result];
+    }
+}
+
 #pragma mark Annotation Views (MKMapviewDelegate Protocol)
 
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
@@ -339,18 +351,30 @@ typedef enum {
             [self.searchRadiusControlView setAnnotation:annotation];
         }
         else {
-            self.searchRadiusControlView = [CENSearchRadiusControlAnnotationView withAnnotation:annotation andCenter:[self overlapCenterPoint] forViewController:self];
+            self.searchRadiusControlView = [CENSearchRadiusControlAnnotationView
+                                            withAnnotation:annotation andCenter:[self overlapCenterPoint]
+                                            forViewController:self];
         }
         return self.searchRadiusControlView;
         [self.mapView bringSubviewToFront:self.searchRadiusControlView];
     }
-    
-    
+
     // Contact Annotation View
     if ([annotation isKindOfClass:[CENContactAnnotation class]]) {
         MKAnnotationView *annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:@"CENContactAnnotation"];
         if (!annotationView) {
-            annotationView = [[MKPinAnnotationView alloc] init];
+            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"CENContactAnnotation"];
+            annotationView.canShowCallout = YES;
+        }
+        return annotationView;
+    }
+    
+    // Search Result View
+    if ([annotation isKindOfClass:[CENSearchResultAnnotation class]]) {
+        MKAnnotationView *annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:@"CENSearchResultAnnotation"];
+        if (!annotationView) {
+            annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"CENSearchResultAnnotation"];
+            annotationView.canShowCallout = YES;
         }
         return annotationView;
     }
@@ -441,6 +465,7 @@ didChangeDragState:(MKAnnotationViewDragState)newState
     CENContactAnnotation *contactAnnotation = [CENContactAnnotation annotationForContact:contact];
     [self.mapView addAnnotation:contactAnnotation];
     [self.contactAnnotations addObject:contactAnnotation];
+    [self.mapView showAnnotations:self.contactAnnotations animated:YES];
     [self setUpMidpointOverlap];
 }
 
@@ -455,17 +480,41 @@ didChangeDragState:(MKAnnotationViewDragState)newState
 }
 
 -(void)removeAllAnnotation {
-    // TODO
+    [self.mapView removeAnnotations:self.mapView.annotations];
 }
 
--(void)removeSearchResult:(MKPlacemark *)searchResult {
-    //TODO
+-(void)removeSearchResults:(NSSet *)searchResults {
+    NSSet *annotationsToRemove = [self searchResultsAnnotationsForResults:searchResults];
+    [self.mapView removeAnnotations:[annotationsToRemove allObjects]];
+    [self.searchResultAnnotations minusSet:annotationsToRemove];
 }
 
--(void)addSearchResult:(MKPlacemark *)searchResult {
-    // TODO
+-(void)removeAllSearchResults {
+    NSArray *searchResultAnn = [self.searchResultAnnotations allObjects];
+    [self.mapView removeAnnotations:searchResultAnn];
+    [self.searchResultAnnotations removeAllObjects];
 }
 
+-(void)addSearchResults:(NSSet *)searchResults {
+    NSSet *newResultAnnotations = [self searchResultsAnnotationsForResults:searchResults];
+    if (!self.searchResultAnnotations) {
+        self.searchResultAnnotations = [[NSMutableSet alloc] initWithSet:newResultAnnotations];
+    }
+    else {
+        [self.searchResultAnnotations unionSet:newResultAnnotations];
+    }
+    [self.mapView addAnnotations:[newResultAnnotations allObjects]];
+    [self.mapView showAnnotations:[self.searchResultAnnotations allObjects] animated:YES];
+    NSLog(@"newAnnotationsCount: %lu currentAnnotationCount: %lu",newResultAnnotations.count,self.searchResultAnnotations.count);
+}
+
+-(NSSet *)searchResultsAnnotationsForResults:(NSSet *)searchResults {
+    NSMutableSet *annotations = [[NSMutableSet alloc] init];
+    for (CENSearchResult *result in searchResults) {
+        [annotations addObject:[CENSearchResultAnnotation annotationForResult:result]];
+    }
+    return annotations;
+}
 
 #pragma mark - Notification Emmission
 
@@ -479,12 +528,18 @@ didChangeDragState:(MKAnnotationViewDragState)newState
      object:[NSValue valueWithCGRect:[self searchRegionCGRect]]];
 }
 
-- (void)emitMapRegionDidChangeNotification {
+- (void)emitSearchRegionDidChangeNotification {
     [[NSNotificationCenter defaultCenter]
-     postNotificationName:cnCENMapRegionDidChangeNotification
-     object:[NSValue valueWithCGRect:[self searchRegionCGRect]]];
+     postNotificationName:cnCENSearchRegionChangedNotification
+     object:[CENCommon valueWithRegion:[self searchRegion]]];
 }
 
+- (void)emitETANeededNotificationForResult:(CENSearchResult *)result {
+    MKDirectionsRequest *etaRequest = [[MKDirectionsRequest alloc] init];
+    etaRequest.destination = result.mapItem;
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENETANeededForResultNotification
+                                                        object:etaRequest];
+}
 
 
 #pragma mark - Notification Subscription
@@ -514,25 +569,6 @@ didChangeDragState:(MKAnnotationViewDragState)newState
      }];
 }
 
-#pragma mark - Container Segues
-
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"Search View Segue"]) {
-        [self setSearchViewController:(CENSearchViewController *)segue.destinationViewController];
-        
-    }
-    else if ([segue.identifier isEqualToString:@"Contact View Segue"]) {
-        [self setContactManager:[[CENContactManager alloc] init]];
-        CENContactViewController *cvc = (CENContactViewController *)segue.destinationViewController;
-        [self setContactViewController:cvc];
-        [cvc setContactManager:self.contactManager];
-    }
-    else if ([segue.identifier isEqualToString:@"travel info segue"]) {
-        [self setTravelInfoViewController:(CENTravelInfoViewController *)segue.destinationViewController];
-        [self.travelInfoViewController.view setBackgroundColor:[UIColor clearColor]];
-        [self.view bringSubviewToFront:self.travelInfoViewController.view];
-    }
-}
 
 #pragma mark - Convenience Methods - Rect Geometry
 
@@ -578,6 +614,8 @@ didChangeDragState:(MKAnnotationViewDragState)newState
     
     return [NSArray arrayWithArray:mapRects];
 }
+
+
 
 - (MKMapRect)mapRectBoundingAllOverlapRegions {
     // Return a maprect that can contain all of the midpoint overlap circles.
@@ -683,10 +721,17 @@ didChangeDragState:(MKAnnotationViewDragState)newState
 }
 
 - (MKCoordinateRegion)searchRegion {
-    return MKCoordinateRegionMakeWithDistance([self.midPointAnnotation coordinate],
-                                              self.searchRadius*2,
-                                              self.searchRadius*2);
+    MKCoordinateRegion searchRegion = MKCoordinateRegionMakeWithDistance([self.midPointAnnotation coordinate],
+                                                            self.searchRadius*2,
+                                                            self.searchRadius*2);
+    NSLog(@"searchRegion - lat: %f lng: %f distanceLat: %f distanceLng: %f",
+          searchRegion.center.latitude,
+          searchRegion.center.longitude,
+          searchRegion.span.latitudeDelta,
+          searchRegion.span.longitudeDelta);
+    return searchRegion;
 }
+
 
 - (CGPoint)searchRegionCenterPoint {
     CLLocationCoordinate2D midpointCoordinate = self.midPointAnnotation.coordinate;
@@ -713,11 +758,7 @@ didChangeDragState:(MKAnnotationViewDragState)newState
 
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    for (UITouch *touch in touches) {
-        NSLog(@"%@ touched", NSStringFromClass([[self.view
-                                                 hitTest:[touch locationInView:self.view]
-                                                 withEvent:event] class]));
-    }
+    [CENCommon emitDismissSearchViewNotification];
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -730,5 +771,31 @@ didChangeDragState:(MKAnnotationViewDragState)newState
          updateWithTouchPoint:touchPointDest andOverlapPoint:overlapPoint];
     }
 }
+
+#pragma mark - Container Segues
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    NSLog(@"segue: %@",segue.identifier);
+    if ([segue.identifier isEqualToString:@"Search View Segue"]) {
+        self.searchViewController = (CENSearchViewController *)segue.destinationViewController;
+        
+    }
+    else if ([segue.identifier isEqualToString:@"Contact View Segue"]) {
+        [self setContactManager:[[CENContactManager alloc] init]];
+        CENContactViewController *cvc = (CENContactViewController *)segue.destinationViewController;
+        self.contactViewController = cvc;
+        [cvc setContactManager:self.contactManager];
+        
+    }
+    else if ([segue.identifier isEqualToString:@"travel info segue"]) {
+        self.travelInfoViewController = (CENTravelInfoViewController *)segue.destinationViewController;
+        [self.travelInfoViewController.view setBackgroundColor:[UIColor clearColor]];
+        [self.view bringSubviewToFront:self.travelInfoViewController.view];
+        
+    }
+}
+
+#pragma mark - Container Visibility Control
+
 
 @end

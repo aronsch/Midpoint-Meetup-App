@@ -10,4 +10,6 @@
 
 @interface CENSearchViewController : UIViewController
 
+-(void)setIsMinified:(BOOL)isMinified;
+
 @end

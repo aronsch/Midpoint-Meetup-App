@@ -48,8 +48,7 @@
 -(void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
     
     CGContextSetStrokeColorWithColor(context, [[CENCommon orangeComplementFillColor] colorWithAlphaComponent:0.75].CGColor);
-    CGContextSetFillColorWithColor(context, [[CENCommon orangeComplementFillColor] colorWithAlphaComponent:0.01].CGColor);
-    NSLog(@"zoomScale %f",zoomScale);
+    CGContextSetFillColorWithColor(context, [[CENCommon orangeComplementFillColor] colorWithAlphaComponent:0.01f].CGColor);
     CGContextSetLineWidth(context, 2/zoomScale);
     
     for (NSValue *value in self.contactOverlapMapRects) {
@@ -58,7 +57,6 @@
         CGContextFillEllipseInRect(context, rect);
         CGContextStrokeEllipseInRect(context, rect);
     }
-    
 }
 
 # pragma mark - Setters

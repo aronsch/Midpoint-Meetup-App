@@ -31,9 +31,9 @@ typedef enum {
 - (void)setOverlapOption:(COAOverlapOption)overlapOption;
 
 #pragma mark Place Type List Datasource
-- (NSArray *)placeTypes;
+@property (nonatomic, copy) NSArray *placeTypes;
 
-#pragma mark - Searching
+#pragma mark - Search Control
 - (void)search;
 - (void)newSearch;
 

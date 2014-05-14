@@ -13,7 +13,6 @@
 
 - (CGRect)searchRegionCGRect;
 - (CGPoint)overlapCenterPoint;
-
 - (void)presentContactPicker;
 
 

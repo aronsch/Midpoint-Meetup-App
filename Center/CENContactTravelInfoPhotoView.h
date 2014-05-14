@@ -13,4 +13,5 @@
 - (void)setImage:(UIImage *)image;
 - (void)updateWithRect:(CGRect)rect;
 
+- (CGRect)badgeRect;
 @end

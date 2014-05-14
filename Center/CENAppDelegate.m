@@ -35,9 +35,14 @@ NSArray *notificationConstants = @[cnCENSearchResultsAdded,
                                 cnCENMapRegionWillChangeNotification,
                                 cnCENMapRegionDidChangeNotification,
                                 cnCENSearchRadiusChangedNotification,
-                                cnCENSearchRadiusRectChangedNotification,
+                                cnCENSearchRegionChangedNotification,
+                                cnCENETANeededForResultNotification,
                                 cnCENETARequestedNotification,
-                                cnCENGeocodeRequestedNotification];
+                                cnCENETAReturnedNotification,
+                                cnCENGeocodeRequestedNotification,
+                                cnCENSearchResultsAdded,
+                                cnCENSearchZeroed,
+                                cnCENDismissSearchViewNotification];
 
 
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];

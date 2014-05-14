@@ -16,11 +16,17 @@
 @property (nonatomic, copy, readwrite) NSString *lastName;
 @property (nonatomic, readwrite) NSDictionary *addressDictionary;
 @property (nonatomic) NSData *photoData;
+@property (nonatomic) MKMapItem *mapItem;
 
 @end
 
 
 @implementation CENContact
+
+//#define ABPersonAddressStreetKey (NSString *)kABPersonAddressStreetKey;
+//#define ABPersonAddressZIPKey (NSString *)kABPersonAddressZIPKey;
+//#define ABPersonAddressCityKey (NSString *)kABPersonAddressCityKey;
+//#define ABPersonAddressStateKey (NSString *)kABPersonAddressStateKey;
 
 #pragma mark - Init
 
@@ -125,13 +131,20 @@
 - (NSString *)addressAsString {
     NSDictionary *d = self.addressDictionary;
     return [NSString stringWithFormat:@"%@, %@, %@ %@",
-            d[@"address"], d[@"city"], d[@"state"], d[@"zipCode"]];
+            d[(NSString *)kABPersonAddressStreetKey],
+            d[(NSString *)kABPersonAddressZIPKey],
+            d[(NSString *)kABPersonAddressCityKey],
+            d[(NSString *)kABPersonAddressStateKey]];
 }
 
+
 - (NSString *)addressAsMultiLineString {
-    NSDictionary *aD = self.addressDictionary;
+    NSDictionary *d = self.addressDictionary;
     return [NSString stringWithFormat:@"%@\n%@, %@ %@",
-            aD[@"address"], aD[@"city"], aD[@"state"], aD[@"zipCode"]];
+            d[(NSString *)kABPersonAddressStreetKey],
+            d[(NSString *)kABPersonAddressZIPKey],
+            d[(NSString *)kABPersonAddressCityKey],
+            d[(NSString *)kABPersonAddressStateKey]];
 }
 
 - (UIImage *)contactPhoto {
@@ -150,6 +163,23 @@
 -(void)setLocation:(CLLocation *)location {
     _location = location;
     [self emitLocationAvailable];
+    [self subscribeToETANeededNotification];
+}
+
+#pragma mark - CENETAInformationProtocol
+
+-(MKMapItem *)mapItem {
+    if (!_mapItem && _location) {
+        MKPlacemark *placemark = [[MKPlacemark alloc]
+                                  initWithCoordinate:_location.coordinate
+                                  addressDictionary:self.addressDictionary];
+        MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
+        mapItem.name = [self nameFirstLast];
+        _mapItem = mapItem;
+        return mapItem;
+    }
+    
+    return _mapItem;
 }
 
 #pragma mark - Utility
@@ -159,21 +189,22 @@
 - (NSValue *)valueWithABInfo:(CENContactABInfo)abInfo {
     return [NSValue value:&abInfo withObjCType:@encode(CENContactABInfo)];
 }
-// When working with c dicts, StringWithFormat protects against returning nil objects.
+
 - (NSDictionary *)addressDictWithAddressRef:(ABMultiValueRef)addressRef andIdentifier:(int)identifier {
     NSInteger index = ABMultiValueGetIndexForIdentifier(addressRef, identifier);
     NSArray *addressMulti = (__bridge_transfer NSArray *)ABMultiValueCopyArrayOfAllValues(addressRef);
     NSDictionary *dict = [addressMulti objectAtIndex:(NSUInteger)index];
     
+    // use stringWithFormat to protect against adding nil objects to dictionary
     NSString *address = [NSString stringWithFormat:@"%@", dict[(NSString *)kABPersonAddressStreetKey]];
     NSString *zipCode = [NSString stringWithFormat:@"%@", dict[(NSString *)kABPersonAddressZIPKey]];
     NSString *city = [NSString stringWithFormat:@"%@", dict[(NSString *)kABPersonAddressCityKey]];
     NSString *state = [NSString stringWithFormat:@"%@", dict[(NSString *)kABPersonAddressStateKey]];
     
-    NSDictionary *rDict = @{@"address":  address,
-                            @"zipCode":  zipCode,
-                            @"city":     city,
-                            @"state":    state};
+    NSDictionary *rDict = @{(NSString *)kABPersonAddressStreetKey:  address,
+                            (NSString *)kABPersonAddressZIPKey:     zipCode,
+                            (NSString *)kABPersonAddressCityKey:    city,
+                            (NSString *)kABPersonAddressStateKey:   state};
     return rDict;
 }
 
@@ -197,7 +228,6 @@
     return [self.contactID intValue] == contactID;
 }
 
-
 #pragma mark - Notification Emission
 
 - (void)emitGeocodingRequest {
@@ -214,6 +244,47 @@
 
 - (void)emitRemoveSelf {
     [[NSNotificationCenter defaultCenter] postNotificationName:cnCENContactRemovedNotification object:self];
+}
+
+#pragma mark ETA Request Notification
+- (void)emitETARequest:(MKDirectionsRequest *)etaRequest {
+    [[NSNotificationCenter defaultCenter] postNotificationName:cnCENETARequestedNotification
+                                                        object:etaRequest];
+
+}
+
+#pragma mark - Notification Subscription
+
+- (void)subscribeToETANeededNotification {
+    
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:cnCENETANeededForResultNotification
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification)
+     {
+         id object = notification.object;
+         if ([object isKindOfClass:[MKDirectionsRequest class]]) {
+             
+             // recieved object can be modified by all subscribers,
+             // so we copy to prevent bad access or race conditions.
+             MKDirectionsRequest *etaRequest = [(MKDirectionsRequest *)object copy];
+             
+             // if missing destination property
+             if (!etaRequest.destination) {
+                 [NSException exceptionWithName:@"MKDirectionsRequest Missing Destination Property"
+                                         reason:@"CENETANeeded notification listener expected a MKDirectionsRequest object with a non-nil Destination value."
+                                       userInfo:nil];
+             }
+             
+             etaRequest.source = self.mapItem;
+             [self emitETARequest:etaRequest];
+         }
+         else {
+             [CENCommon exceptionPayloadClassExpected:[MKDirectionsRequest class]
+                                      forNotification:notification];
+         }
+     }];
 }
 
 @end

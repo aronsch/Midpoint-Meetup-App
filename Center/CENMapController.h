@@ -17,8 +17,9 @@
 - (void)addContactAnnotationForContact:(CENContact *)contact;
 - (void)removeContactAnnotationForContact:(CENContact *)contact;
 
-- (void)addSearchResult:(MKPlacemark *)searchResult;
-- (void)removeSearchResult:(MKPlacemark *)searchResult;
+- (void)addSearchResults:(NSSet *)searchResults;
+- (void)removeSearchResults:(NSSet *)searchResults;
+- (void)removeAllSearchResults;
 
 - (void)removeAllAnnotation;
 

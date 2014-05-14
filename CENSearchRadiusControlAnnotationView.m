@@ -115,9 +115,9 @@ NSString * const caCENSearchAreaHandleAnnotationReuseID = @"CENSearchAreaHandleA
     CAShapeLayer *layer = [CAShapeLayer layer];
     layer.path = [self radiusSliderButtonPathForRect:rect];
     
-    UIColor* color = [UIColor colorWithRed:0.114 green:0.705 blue:1 alpha:1];
-    UIColor* color2 = [UIColor colorWithRed:0 green:0.59 blue:0.886 alpha:1];
-    CGSize shadowOffset = CGSizeMake(1.1, 3.1);
+    UIColor* color = [UIColor colorWithRed:0.114f green:0.705f blue:1 alpha:1];
+    UIColor* color2 = [UIColor colorWithRed:0 green:0.59f blue:0.886f alpha:1];
+    CGSize shadowOffset = CGSizeMake(1.1f, 3.1f);
     CGFloat shadowBlurRadius = 2;
     
     [layer setFillColor:color.CGColor];
@@ -147,7 +147,7 @@ NSString * const caCENSearchAreaHandleAnnotationReuseID = @"CENSearchAreaHandleA
 -(CAShapeLayer *)makeCenterMarkerShape {
     CAShapeLayer *layer = [CAShapeLayer layer];
     layer.path = [self centerMarkerPathWithCenterPoint:[self leaderLineOrigin]];
-    CGSize shadowOffset = CGSizeMake(1.1, 3.1);
+    CGSize shadowOffset = CGSizeMake(1.1f, 3.1f);
     CGFloat shadowBlurRadius = 2;
     
     [layer setFillColor:[CENCommon blueFillColor].CGColor];
@@ -157,7 +157,7 @@ NSString * const caCENSearchAreaHandleAnnotationReuseID = @"CENSearchAreaHandleA
     [layer setShadowRadius:shadowBlurRadius];
     [layer setShadowOpacity:0.25f];
     [layer setHidden:YES];
-    [layer setTransform:CATransform3DMakeScale(0.01, 0.01, 1)];
+    [layer setTransform:CATransform3DMakeScale(0.01f, 0.01f, 1)];
     return layer;
 }
 
@@ -221,7 +221,7 @@ NSString * const caCENSearchAreaHandleAnnotationReuseID = @"CENSearchAreaHandleA
         self.currentScale = scale;
     }
     
-    CGFloat overShoot = 0.15;
+    CGFloat overShoot = 0.15f;
     overShoot = self.currentScale - scale <= 0 ? overShoot : -overShoot;
     
     CAKeyframeAnimation *kfaScale = [CAKeyframeAnimation animation];
@@ -251,7 +251,7 @@ NSString * const caCENSearchAreaHandleAnnotationReuseID = @"CENSearchAreaHandleA
 - (void)animateCenterMarkerPopIn {
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.15f];
-    [self.centerMarker setTransform:CATransform3DMakeScale(1.1, 1.1, 1)];
+    [self.centerMarker setTransform:CATransform3DMakeScale(1.1f, 1.1f, 1)];
     [UIView commitAnimations];
     
     [UIView beginAnimations:nil context:NULL];
@@ -264,12 +264,12 @@ NSString * const caCENSearchAreaHandleAnnotationReuseID = @"CENSearchAreaHandleA
     CENLogRect(self.centerMarker.frame, @"center marker");
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.1f];
-    [self.centerMarker setTransform:CATransform3DMakeScale(1.1, 1.1, 0)];
+    [self.centerMarker setTransform:CATransform3DMakeScale(1.1f, 1.1f, 0)];
     [UIView commitAnimations];
     
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.15f];
-    [self.centerMarker setTransform:CATransform3DMakeScale(0.01, 0.01, 0)];
+    [self.centerMarker setTransform:CATransform3DMakeScale(0.01f, 0.01f, 0)];
     [UIView commitAnimations];
 }
 

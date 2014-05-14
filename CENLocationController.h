@@ -13,7 +13,7 @@
 
 @interface CENLocationController : NSObject
 
-@property (readonly, strong, nonatomic) CLLocation *userLocation;
+@property (readonly, nonatomic) CLLocation *userLocation;
 
 - (void)beginUpdatingLocation;
 - (void)stopUpdatingLocation;

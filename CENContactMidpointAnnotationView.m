@@ -153,7 +153,7 @@ NSString * const caCENContactMidpointAnnotationReuseID = @"CENContactMidpointAnn
     [lowerCircle setStrokeColor:[CENCommon blueBorderColor].CGColor];
     [lowerCircle setLineWidth:5];
     [lowerCircle setShadowColor:[UIColor blackColor].CGColor];
-    [lowerCircle setShadowOffset:CGSizeMake(1.1, 1.1)];
+    [lowerCircle setShadowOffset:CGSizeMake(1.1f, 1.1f)];
     [lowerCircle setShadowRadius:2];
     [lowerCircle setShadowOpacity:0.25];
     

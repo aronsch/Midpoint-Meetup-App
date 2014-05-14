@@ -16,30 +16,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ozw-Ku-rss">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ozw-Ku-rss">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="yZn-Jx-xep"/>
                                 </connections>
                             </mapView>
-                            <containerView hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Oil-Mc-kUt" userLabel="Search View Container">
-                                <rect key="frame" x="-252" y="42" width="252" height="485"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <connections>
-                                    <segue destination="kOe-7e-drZ" kind="embed" identifier="Search View Segue" id="rna-ow-tto"/>
-                                </connections>
-                            </containerView>
-                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ige-Mp-sSP" userLabel="Contact Info View">
-                                <rect key="frame" x="0.0" y="378" width="320" height="190"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <segue destination="Z9P-aG-CnA" kind="embed" identifier="travel info segue" id="56C-i6-HOw"/>
-                                </connections>
-                            </containerView>
-                            <containerView hidden="YES" clipsSubviews="YES" tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BXw-9d-oMG" userLabel="Contact View Container">
+                            <containerView hidden="YES" clipsSubviews="YES" tag="1" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BXw-9d-oMG" userLabel="Contact View Container">
                                 <rect key="frame" x="320" y="41" width="252" height="486"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -47,26 +31,23 @@
                                     <segue destination="Mrn-FE-ndw" kind="embed" identifier="Contact View Segue" id="McW-On-Xzh"/>
                                 </connections>
                             </containerView>
+                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ige-Mp-sSP" userLabel="Contact Info View">
+                                <rect key="frame" x="0.0" y="378" width="320" height="190"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <segue destination="Z9P-aG-CnA" kind="embed" identifier="travel info segue" id="56C-i6-HOw"/>
+                                </connections>
+                            </containerView>
+                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oil-Mc-kUt" userLabel="Search View Container" customClass="CENPassTouchView">
+                                <rect key="frame" x="34" y="24" width="252" height="403"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <segue destination="kOe-7e-drZ" kind="embed" identifier="Search View Segue" id="rna-ow-tto"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="bottom" secondItem="Ozw-Ku-rss" secondAttribute="bottom" id="0yv-kC-ThI"/>
-                            <constraint firstAttribute="trailing" secondItem="BXw-9d-oMG" secondAttribute="trailing" constant="-252" id="22i-Sc-naH"/>
-                            <constraint firstItem="BXw-9d-oMG" firstAttribute="leading" secondItem="Ige-Mp-sSP" secondAttribute="trailing" id="3H9-ML-TFt"/>
-                            <constraint firstItem="BXw-9d-oMG" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" constant="41" id="8Ax-hB-66S"/>
-                            <constraint firstItem="Oil-Mc-kUt" firstAttribute="bottom" secondItem="BXw-9d-oMG" secondAttribute="bottom" id="94g-lt-Amw"/>
-                            <constraint firstItem="Oil-Mc-kUt" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="-252" id="BV5-uW-oqO"/>
-                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="JNi-Rb-amf"/>
-                            <constraint firstItem="Ozw-Ku-rss" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="cFu-8F-7ms"/>
-                            <constraint firstAttribute="bottom" secondItem="Ozw-Ku-rss" secondAttribute="bottom" id="ckb-yc-Z7s"/>
-                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="trailing" secondItem="Ozw-Ku-rss" secondAttribute="trailing" id="dLI-Tv-t7E"/>
-                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="leading" secondItem="Ozw-Ku-rss" secondAttribute="leading" id="ffy-Sy-xDQ"/>
-                            <constraint firstItem="Ozw-Ku-rss" firstAttribute="centerY" secondItem="BXw-9d-oMG" secondAttribute="centerY" id="ghF-kT-GCS"/>
-                            <constraint firstAttribute="trailing" secondItem="Ige-Mp-sSP" secondAttribute="trailing" id="hIc-nf-eFH"/>
-                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="top" secondItem="NXe-CY-lOd" secondAttribute="bottom" constant="358" id="kmu-FP-L2p"/>
-                            <constraint firstItem="Ige-Mp-sSP" firstAttribute="leading" secondItem="Oil-Mc-kUt" secondAttribute="trailing" id="m8t-cx-7Pb"/>
-                            <constraint firstItem="Ozw-Ku-rss" firstAttribute="centerY" secondItem="Oil-Mc-kUt" secondAttribute="centerY" id="uF8-da-GNe"/>
-                        </constraints>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="Ozw-Ku-rss" id="SVv-ch-Ud5"/>
@@ -84,31 +65,40 @@
                         <viewControllerLayoutGuide type="top" id="B8q-jQ-nmb"/>
                         <viewControllerLayoutGuide type="bottom" id="fTE-B1-kzH"/>
                     </layoutGuides>
-                    <view key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="84X-37-PwY">
-                        <rect key="frame" x="0.0" y="0.0" width="252" height="485"/>
+                    <view key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="84X-37-PwY" customClass="CENSearchViewControllerUIView">
+                        <rect key="frame" x="0.0" y="0.0" width="252" height="403"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="EOk-6X-0zf">
-                                <rect key="frame" x="10" y="171" width="232" height="262"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" allowsMultipleSelection="YES" rowHeight="40" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="EOk-6X-0zf">
+                                <rect key="frame" x="10" y="153" width="232" height="200"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Place Type Cell" id="mk8-96-NfA">
-                                        <rect key="frame" x="0.0" y="22" width="232" height="44"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mk8-96-NfA" id="l0W-9M-JNR">
-                                            <rect key="frame" x="0.0" y="0.0" width="232" height="43"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Place Type Cell" textLabel="rsd-TT-HNP" style="IBUITableViewCellStyleDefault" id="4Zb-8K-Hj5">
+                                        <rect key="frame" x="0.0" y="22" width="232" height="40"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4Zb-8K-Hj5" id="mk1-HF-TiA">
+                                            <rect key="frame" x="0.0" y="0.0" width="232" height="39"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rsd-TT-HNP">
+                                                    <rect key="frame" x="15" y="0.0" width="202" height="39"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
-                                    <outlet property="dataSource" destination="kOe-7e-drZ" id="ELm-gZ-aMH"/>
-                                    <outlet property="delegate" destination="kOe-7e-drZ" id="8ac-qi-gfN"/>
+                                    <outlet property="dataSource" destination="kOe-7e-drZ" id="pxb-5a-zfw"/>
+                                    <outlet property="delegate" destination="kOe-7e-drZ" id="xEt-IY-XrR"/>
                                 </connections>
                             </tableView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="gmp-4u-qCM">
-                                <rect key="frame" x="7" y="64" width="238" height="29"/>
+                                <rect key="frame" x="7" y="59" width="238" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="$"/>
@@ -125,11 +115,13 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                 <connections>
+                                    <action selector="touchOutsideUserKeywordField:" destination="kOe-7e-drZ" eventType="touchUpOutside" id="dQC-CJ-XAd"/>
                                     <action selector="userSearchKeywordEntered:" destination="kOe-7e-drZ" eventType="editingDidEnd" id="JY2-1Y-ClS"/>
+                                    <action selector="userSearchKeywordExited:" destination="kOe-7e-drZ" eventType="editingDidEndOnExit" id="TSK-W2-c0k"/>
                                 </connections>
                             </textField>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="0vE-e7-i4Z">
-                                <rect key="frame" x="7" y="120" width="238" height="29"/>
+                                <rect key="frame" x="7" y="109" width="238" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="*"/>
@@ -141,16 +133,26 @@
                                 </connections>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SnT-zg-uvH">
-                                <rect key="frame" x="15" y="441" width="222" height="44"/>
+                                <rect key="frame" x="15" y="359" width="222" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Search">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="searchButtonTapped:" destination="kOe-7e-drZ" eventType="touchUpInside" id="Lf9-A4-jC1"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <toolbarItems/>
+                    <connections>
+                        <outlet property="overlapAmountSegmentControl" destination="0vE-e7-i4Z" id="Tuh-T1-P21"/>
+                        <outlet property="placeTypesTable" destination="EOk-6X-0zf" id="6NS-lH-CQe"/>
+                        <outlet property="priceFilterSegmentControl" destination="gmp-4u-qCM" id="OeB-fP-6oA"/>
+                        <outlet property="searchButton" destination="SnT-zg-uvH" id="0a7-el-w82"/>
+                        <outlet property="userKeywordSearchTextField" destination="Ii2-Hm-6Yo" id="R2J-ur-CmP"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ttn-m3-Ngv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -288,14 +290,14 @@
                                         </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CENAddContactCVCellReuseID" id="rwB-gM-IXd" customClass="CENAddContactCVCell">
-                                        <rect key="frame" x="18" y="93" width="72" height="88"/>
+                                        <rect key="frame" x="27" y="93" width="54" height="88"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="72" height="88"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="54" height="88"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
-                                        <size key="customSize" width="72" height="88"/>
+                                        <size key="customSize" width="54" height="88"/>
                                     </collectionViewCell>
                                 </cells>
                                 <connections>

@@ -9,11 +9,13 @@
 #import "CENMapController.h"
 #import "CENCommon.h"
 #import "CENContact.h"
+#import "CENSearchResult.h"
 #import <MapKit/MapKit.h>
 
 @interface CENMapController ()
 
-@property (strong, nonatomic) id delegate;
+@property (nonatomic) id delegate;
+@property (nonatomic) NSMutableSet *searchResults;
 
 @end
 
@@ -42,6 +44,8 @@
     [self subscribeToLocationUpdatedNotification];
     [self subscribeToLocationAvailableNotification];
     [self subscribeToContactRemovedNotification];
+    [self subscribeToNewSearchResultsNotification];
+    [self subscribeToSearchZeroedNotification];
 }
 
 - (void)subscribeToLocationUpdatedNotification {
@@ -51,7 +55,38 @@
                          queue:[NSOperationQueue mainQueue]
                     usingBlock:^(NSNotification *notification)
      {
-         
+         // TODO - Necessary?
+     }];
+}
+
+
+- (void)subscribeToNewSearchResultsNotification {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:cnCENSearchResultsAdded
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification)
+     {
+         id object = notification.object;
+         if ([object isKindOfClass:[NSSet class]]) {
+             [self.searchResults unionSet:object];
+             [self.delegate addSearchResults:object];
+         }
+         else {
+             [CENCommon exceptionPayloadClassExpected:[NSSet class] forNotification:notification];
+         }
+     }];
+}
+
+- (void)subscribeToSearchZeroedNotification {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserverForName:cnCENSearchZeroed
+                        object:nil
+                         queue:[NSOperationQueue mainQueue]
+                    usingBlock:^(NSNotification *notification)
+     {
+         [self.delegate removeAllSearchResults];
+         [self.searchResults removeAllObjects];
      }];
 }
 
@@ -70,9 +105,6 @@
              
              if ([object isKindOfClass:[CENContact class]]) {
                  [self.delegate addContactAnnotationForContact:object];
-             }
-             else if ([object isKindOfClass:[MKPlacemark class]]) {
-                 [self.delegate addSearchResult:object];
              }
          }
          else {

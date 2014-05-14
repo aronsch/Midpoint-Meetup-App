@@ -17,12 +17,11 @@ typedef struct {
     int identifier;
 } CENContactABInfo;
 
-@interface CENContact : NSObject <CENGeoInformationProtocol, NSCoding>
+@interface CENContact : NSObject <CENGeoInformationProtocol, CENETAInformationProtocol, NSCoding>
 
 @property (nonatomic, readonly, copy) NSNumber *contactID;
-
-@property (nonatomic, copy, readonly) NSString *firstName;
-@property (nonatomic, copy, readonly) NSString *lastName;
+@property (nonatomic, readonly, copy) NSString *firstName;
+@property (nonatomic, readonly, copy) NSString *lastName;
 @property (nonatomic, readonly) NSDictionary *addressDictionary;
 
 #pragma mark - Factory
@@ -32,8 +31,6 @@ typedef struct {
 - (void)updateWithInfo:(CENContactABInfo)abInfo;
 
 #pragma Mark - Contact Information
-- (NSString *)firstName;
-- (NSString *)lastName;
 - (NSString *)nameFirstLast;
 - (NSString *)nameLastFirst;
 - (NSString *)addressAsString;
@@ -49,6 +46,8 @@ typedef struct {
 @property (readwrite, nonatomic) CLLocation *location;
 - (void)setLocation:(CLLocation *)location;
 
+#pragma mark - CENETAInformationProtocol
+-(MKMapItem *)mapItem;
 
 @end
 

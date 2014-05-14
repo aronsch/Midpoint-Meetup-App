@@ -12,7 +12,7 @@
 
 @implementation CENSearchResultAnnotation
 
-+(instancetype)annotationForSearchResult:(CENSearchResult *)searchResult {
++(instancetype)annotationForResult:(CENSearchResult *)searchResult {
     return [[self alloc] initWithSearchResult:searchResult];
 }
 
@@ -22,13 +22,21 @@
         return nil;
     }
     _searchResult = searchResult;
-    [self configure];
+    _coordinate = searchResult.placemark.coordinate;
+    _title = searchResult.placemark.name;
     return self;
 }
 
-- (void)configure {
-    [self setTitle:self.searchResult.name];
-    [self setSubtitle:@""];
+-(BOOL)isEqual:(id)object {
+    if (object == self)
+        return YES;
+    if (!object || ![object isKindOfClass:[self class]])
+        return NO;
+    return [self isEqualToResultAnnotation:object];
+}
+
+-(BOOL)isEqualToResultAnnotation:(CENSearchResultAnnotation *)object {
+    return [self.searchResult isEqual:object.searchResult];
 }
 
 @end

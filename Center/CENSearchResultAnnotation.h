@@ -12,11 +12,13 @@
 
 @interface CENSearchResultAnnotation : NSObject <MKAnnotation>
 
-+ (instancetype)annotationForSearchResult:(CENSearchResult *)searchResult;
++ (instancetype)annotationForResult:(CENSearchResult *)searchResult;
 
 @property(readonly, strong, nonatomic) CENSearchResult *searchResult;
 @property(nonatomic, assign) CLLocationCoordinate2D coordinate;
 @property(nonatomic, copy) NSString *title;
 @property(nonatomic, copy) NSString *subtitle;
+
+-(BOOL)isEqual:(id)object;
 
 @end

@@ -22,50 +22,67 @@
 
 @end
 
+@protocol CENETAInformationProtocol <NSObject>
+
+-(MKMapItem *)mapItem;
+
+@end
+
 
 @interface CENCommon : NSObject
 
 #pragma mark - Application Notification Constants
 
-#pragma mark -Search Notification Constancts
+#pragma mark Search Notification Constancts
 extern NSString * const cnCENSearchResultsAdded;
 extern NSString * const cnCENSearchZeroed;
 
-#pragma mark -Location Manager Notification Constants
+#pragma mark Location Manager Notification Constants
 extern NSString * const cnCENUserLocationUpdatedNotification;
 extern NSString * const cnCENMidpointUpdated;
 extern NSString * const cnCENETAReturnedNotification;
 
-#pragma mark -Contact Notification Constants
+#pragma mark Contact Notification Constants
 extern NSString * const cnCENContactAddedNotification;
 extern NSString * const cnCENContactRemovedNotification;
 extern NSString * const cnCENContactModifiedNotification;
 extern NSString * const cnCENContactsHaveChangedNotification;
 
-#pragma mark -Map Interaction Notifications
+#pragma mark Map Interaction Notifications
 extern NSString * const cnCENSearchResultSelectedNotification;
 extern NSString * const cnCENContactSelectedNotification;
 extern NSString * const cnCENSearchRadiusChangedNotification;
-extern NSString * const cnCENSearchRadiusRectChangedNotification;
+extern NSString * const cnCENSearchRegionChangedNotification;
 extern NSString * const cnCENMapRegionWillChangeNotification;
 extern NSString * const cnCENMapRegionDidChangeNotification;
+extern NSString * const cnCENDismissSearchViewNotification;
 
-#pragma mark -Travel Info View Notifications
+#pragma mark Travel Info View Notifications
+extern NSString * const cnCENETANeededForResultNotification;
 extern NSString * const cnCENETARequestedNotification;
+extern NSString * const cnCENETAReturnedForContactNotification;
 
-#pragma mark -CENGeoInformationProtocol Notifications
+#pragma mark CENGeoInformationProtocol Notifications
 extern NSString * const cnCENGeocodeRequestedNotification;
 extern NSString * const cnCENLocationAvailableNotification;
 
-#pragma mark -Contact Object Notifications
+#pragma mark Contact Object Notifications
 extern NSString * const cnCENContactUpdateRequestedNotification;
+
+#pragma mark - Standard Notification Emission
++(void)emitDismissSearchViewNotification;
+
+#pragma mark - ETA Dictionary Key Constants
+extern NSString * const kCENETASourceKey;
+extern NSString * const kCENETADestinationKey;
+extern NSString * const kCENETAETATimeKey;
 
 #pragma mark - Standard Exceptions
 +(void)exceptionObjectDoesNotConformToCENGeoInformationProtocol:(id)object;
 +(void)exceptionPayloadClassExpected:(Class)expectedClass
       forNotification:(NSNotification *)notification;
 
-#pragma - Standard Colors
+#pragma mark - Standard Colors
 + (UIColor *)blueFillColor;
 + (UIColor *)blueFillColorLowAlpha;
 + (UIColor *)orangeComplementFillColor;
@@ -75,7 +92,7 @@ extern NSString * const cnCENContactUpdateRequestedNotification;
 + (UIColor *)shadowColor;
 + (UIColor *)distantShadowColor;
 
-#pragma Shadows Parameters
+#pragma mark - Shadow Parameters
 + (CGSize)lowShadowSize;
 + (CGFloat)lowShadowBlur;
 + (CGSize)midShadowSize;
@@ -87,10 +104,19 @@ extern NSString * const cnCENContactUpdateRequestedNotification;
 
 + (NSValue *)valueWithMapRect:(MKMapRect)mapRect;
 + (MKMapRect)mapRectFromValue:(NSValue *)mapRectValue;
++ (NSValue *)valueWithRegion:(MKCoordinateRegion)region;
++ (MKCoordinateRegion)regionFromValue:(NSValue *)regionValue;
++ (NSValue *)valueWithColorRef:(CGColorRef)color;
++ (NSValue *)valueWithTimeInterval:(NSTimeInterval)timeInterval;
++ (NSTimeInterval)timeIntervalForValue:(NSValue *)value;
 
+#pragma mark - Dictionary Factories
+
++(NSDictionary *)etaRequestDictionionaryWithSource:(id<CENETAInformationProtocol>)source
+                                    andDestination:(id<CENETAInformationProtocol>)destination;
 @end
 
-#pragma - Standard Geometry Functions
+#pragma mark - Standard Geometry Functions
 
 CGPoint RectGetCenter( CGRect rect);
 CGRect RectAroundCenter( CGPoint center, CGSize size);
@@ -98,7 +124,7 @@ CGRect RectCenteredInRect( CGRect rect, CGRect mainRect);
 CGSize sizeForSquareThatFitsRect(CGRect rect);
 CGFloat distanceBetweenPoints (CGPoint a, CGPoint b);
 
-#pragma - Map Geometry Functions
+#pragma mark - Map Geometry Functions
 
 MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region);
 

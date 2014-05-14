@@ -150,21 +150,16 @@
      }];
 }
 
+#pragma mark - Dismiss Other View Controllers on Touch
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    [CENCommon emitDismissSearchViewNotification];
+}
+
 #pragma mark - Custom Setters
 
 -(void)setContacts:(NSArray *)contacts {
     _contacts = contacts;
     [self.contactsCollectionView reloadData];
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

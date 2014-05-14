@@ -6,14 +6,21 @@
 //  Copyright (c) 2014 Aron Schneider. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <MapKit/MapKit.h>
+@class MKMapItem;
+@class MKPlacemark;
 
-@interface CENSearchResult : NSObject
+#import "CENCommon.h"
 
-@property (readonly, strong, nonatomic) MKPlacemark *placemark;
+@interface CENSearchResult : NSObject <CENETAInformationProtocol>
+
+@property (readonly, nonatomic) MKMapItem *mapItem;
+@property (readonly, nonatomic) MKPlacemark *placemark;
 @property (nonatomic, copy) NSString *name;
-@property (nonatomic, assign) int rating;
+@property (readonly, nonatomic) NSURL *url;
 @property (readonly,nonatomic, strong) NSMutableDictionary *etaToContacts;
+
++ (instancetype)resultWithMapItem:(MKMapItem *)mapItem;
+- (BOOL)isEqual:(id)object;
+- (NSUInteger)hash;
 
 @end

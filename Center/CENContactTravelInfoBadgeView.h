@@ -10,6 +10,7 @@
 
 @interface CENContactTravelInfoBadgeView : UIView
 
-- (void)setText:(NSString *)text;
+- (void)setETA:(NSTimeInterval)eta;
+- (void)clearETA;
 
 @end
