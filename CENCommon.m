@@ -182,6 +182,27 @@ NSString * const kCENETAETATimeKey = @"CENETATime";
              kCENETADestinationKey: destination,
              kCENETAETATimeKey: [NSNull null]};
 }
+
+#pragma mark - Standard String Formats
++(NSString *)stringForETATime:(NSTimeInterval)etaTime {
+    NSTimeInterval seconds = etaTime;
+    int minutes = (int)round(fmod((seconds/60),60));
+    int hours = (int)round(minutes/60);
+    
+    NSString *string = @"";
+    
+    if (hours >= 1) {
+        string = [NSString stringWithFormat:@"%ih %im", hours, minutes];
+    }
+    else if (seconds >= 60) {
+        string = [NSString stringWithFormat:@"%im", minutes];
+    }
+    else if (seconds < 60) {
+        string = @"<1m";
+    }
+    
+    return string;
+}
 @end
 
 #pragma mark - Standard Geometry Functions

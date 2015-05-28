@@ -114,6 +114,10 @@ extern NSString * const kCENETAETATimeKey;
 
 +(NSDictionary *)etaRequestDictionionaryWithSource:(id<CENETAInformationProtocol>)source
                                     andDestination:(id<CENETAInformationProtocol>)destination;
+
+#pragma mark - Standard String Formats
++(NSString *)stringForETATime:(NSTimeInterval)eta;
+
 @end
 
 #pragma mark - Standard Geometry Functions
